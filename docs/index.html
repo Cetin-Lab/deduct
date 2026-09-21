@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>DEDUCT: Deep DNA Sequence Compression by Using Orthogonal Transform Network Layers</title>
+  <meta name="description" content="DEDUCT is a reference-free, constructively lossless compressor for collections of genomes. An alignment-aware front end feeds a convolutional autoencoder with a vertical block-DCT bottleneck, and the decoder weights are counted inside every reported bitrate.">
+
+  <meta property="og:title" content="DEDUCT: Deep DNA Sequence Compression by Using Orthogonal Transform Network Layers">
+  <meta property="og:description" content="Reference-free, constructively lossless compression of genome collections, with the decoder weights counted inside the reported size. IEEE Access, under review.">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://cetin-lab.github.io/deduct/assets/fig-system.png">
+
+  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#FBFBF9">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)"  content="#15181B">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=STIX+Two+Text:ital,wght@0,400;0,600;1,400&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@400&amp;display=swap" rel="stylesheet">
+
+  <style>
+    /* ============================================================
+       Design language: "typeset first page of a paper"
+       - STIX Two Text: a serif drawn for scientific publishing
+       - IBM Plex Sans/Mono: labels, buttons, code
+       - Double rule (thick + thin): the classic journal masthead
+       - Booktabs table style: the web equivalent of LaTeX tables
+       Light is the primary palette; the dark variant below keeps the
+       same character (paper/ink/oxblood) rather than inverting it.
+       ============================================================ */
+
+    :root {
+      --paper:  #FBFBF9;
+      --ink:    #1C2025;
+      --muted:  #5C636B;
+      --accent: #7C2B33;   /* oxblood */
+      --rule:   #D9DAD4;
+      --wash:   #F1F1EC;
+      --plate:  #FFFFFF;   /* logo plates: always white, so marks render as issued */
+      --shadow: rgba(28, 32, 37, 0.06);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --paper:  #15181B;
+        --ink:    #E6E3DE;
+        --muted:  #9BA1A8;
+        --accent: #C98089;  /* the same oxblood, lifted until it clears 4.5:1 on the dark ground */
+        --rule:   #333940;
+        --wash:   #1D2126;
+        --plate:  #FFFFFF;
+        --shadow: rgba(0, 0, 0, 0.4);
+      }
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: "STIX Two Text", Georgia, serif;
+      font-size: 17px;
+      line-height: 1.75;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    ::selection { background: var(--accent); color: var(--paper); }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+    :focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+      border-radius: 2px;
+    }
+
+    .skip {
+      position: absolute;
+      left: -9999px;
+      top: 0;
+      font-family: "IBM Plex Sans", sans-serif;
+      font-size: 0.875rem;
+      background: var(--ink);
+      color: var(--paper);
+      padding: 0.6rem 1rem;
+      z-index: 10;
+    }
+    .skip:focus { left: 0.75rem; top: 0.75rem; }
+
+    .page {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 4.5rem 1.5rem 3rem;
+    }
+
+    .section { margin-bottom: 4rem; }
+
+    /* ---------- Masthead (hero) ---------- */
+
+    .eyebrow {
+      font-family: "IBM Plex Sans", sans-serif;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.25rem;
+    }
+
+    .title {
+      font-size: clamp(1.6rem, 4.2vw, 2.35rem);
+      font-weight: 600;
+      line-height: 1.22;
+      letter-spacing: -0.01em;
+      margin-bottom: 1.1rem;
+      text-wrap: balance;
+    }
+
+    .authors {
+      font-size: 1.125rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .authors sup, .affils sup {
+      color: var(--accent);
+      font-size: 0.7em;
+      margin-left: 1px;
+    }
+
+    .authors .member {
+      font-family: "IBM Plex Sans", sans-serif;
+      font-size: 0.8125rem;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .affils {
+      font-family: "IBM Plex Sans", sans-serif;
+      font-size: 0.875rem;
+      line-height: 1.6;
+      color: var(--muted);
+      margin-bottom: 1rem;
+      list-style: none;
+    }
+
+    .affils li { margin-bottom: 0.15rem; }
+    .affils sup { margin-right: 0.35rem; }
+
+    .corresp, .status {
+      font-family: "IBM Plex Sans", sans-serif;
+      font-size: 0.875rem;
+      color: var(--muted);
+    }
+    .corresp { margin-bottom: 0.4rem; }
+    .status { margin-bottom: 1.5rem; }
+    .status strong { color: var(--ink); font-weight: 600; }
+
+    /* A placeholder that the author must replace before the site goes public.
+       Rendered as a visible chip so it cannot be mistaken for a real address. */
+    .todo {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.8em;
+      color: var(--accent);
+      border: 1px dashed var(--accent);
+      border-radius: 3px;
+      padding: 0.05em 0.4em;
+      white-space: nowrap;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .btn {
+      font-family: "IBM Plex Sans", sans-serif;
+      font-size: 0.875rem;
+      font-weight: 500;
+      padding: 0.55rem 1.1rem;
+      border: 1px solid var(--ink);
+      border-radius: 6px;
+      color: var(--ink);
+      transition: background 0.15s ease, color 0.15s ease;
+      display: inline-block;
+    }
+
+    .btn:hover { background: var(--wash); text-decoration: none; }
+
+    .btn-primary { background: var(--ink); color: var(--paper); }
+    .btn-primary:hover { background: var(--accent); border-color: var(--accent); color: var(--paper); }
+
+    /* A link that does not exist yet is shown as a dashed, non-interactive chip
+       rather than as a dead <a href="#">. */
+    .btn-pending {
+      border-style: dashed;
+      border-color: var(--rule);
+      color: var(--muted);
+      cursor: default;
+    }
+    .btn-pending .todo { border: 0; padding: 0; margin-left: 0.35rem; }
+
+    .actions-note {
+      font-family: "IBM Plex Sans", sans-serif;
+      font-size: 0.8125rem;
+      color: var(--muted);
+      margin-bottom: 2.25rem;
+    }
+
+    /* Journal masthead rule: thick + thin */
+    .rule-double {
+      height: 7px;
+      border-top: 3px solid var(--ink);
+      border-bottom: 1px solid var(--ink);
+    }
+
+    /* ---------- Institution logos ---------- */
+
+    .logos {
+      display: grid;
+      /* Two across rather than four: at 760 px of column width four plates leave the
+         bilingual METU wordmark about 23 px tall, which is below legibility. */
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.75rem;
+      align-items: stretch;
+      margin: 2.25rem 0 0;
+      list-style: none;
+    }
+
+    .logos li { display: flex; }
+
+    .logo-plate {
+      background: var(--plate);
+      border: 1px solid var(--rule);
+      border-radius: 6px;
+      padding: 0.9rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      min-height: 88px;
+      box-shadow: 0 1px 2px var(--shadow);
+      transition: border-color 0.15s ease;
+    }
+
+    .logo-plate:hover { border-color: var(--accent); text-decoration: none; }
+
+    .logo-plate img {
+      display: block;
+      max-width: 100%;
+      width: auto;
+      height: auto;
+      max-height: 54px;
+    }
+
+    /* The TÜBİTAK mark is vertical; give it a little more height so the
+       wordmark under the triangle stays legible next to the horizontal marks. */
+    .logo-plate img.logo-tall { max-height: 66px; }
+
+    /* Below ~480 px two plates leave the widest wordmark under 25 px tall; stack instead. */
+    @media (max-width: 480px) {
+      .logos { grid-template-columns: 1fr; }
+    }
+
+    .logos-caption {
+      font-family: "IBM Plex Sans", sans-serif;
+      font-size: 0.75rem;
+      line-height: 1.6;
+      color: var(--muted);
+      margin-top: 0.7rem;
+    }
+
+    /* ---------- Section headings ---------- */
+
+    h2 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 1.1rem;
+      scroll-margin-top: 1.5rem;
+    }
+
+    h2 .num {
+      color: var(--accent);
+      margin-right: 0.45rem;
+      font-variant-numeric: lining-nums;
+    }
+
+    h3 {
+      font-family: "IBM Plex Sans", sans-serif;
+      font-size: 0.9375rem;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      margin: 2rem 0 0.6rem;
+    }
+
+    .section p + p { margin-top: 1rem; }
+
+    .lede { font-size: 1.0625rem; }
+
+    .nowrap { white-space: nowrap; }
+
+    ul.plain, ol.plain { margin: 1rem 0 0 1.15rem; }
+    ul.plain li, ol.plain li { margin-bottom: 0.5rem; }
+
+    dl.slots { margin-top: 1rem; }
+    dl.slots dt {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.8125rem;
+      color: var(--accent);
+      margin-top: 0.9rem;
+    }
+    dl.slots dd { font-size: 0.9375rem; color: var(--muted); }
+
+    /* ---------- Headline numbers ---------- */
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1px;
+      background: var(--rule);
+      border: 1px solid var(--rule);
+      border-radius: 6px;
+      overflow: hidden;
+      margin: 1.75rem 0 0.75rem;
+      list-style: none;
+    }
+
+    .stats li {
+      background: var(--paper);
+      padding: 1rem 1.1rem;
+    }
+
+    .stat-value {
+      display: block;
+      font-size: 1.6rem;
+      font-weight: 600;
+      line-height: 1.15;
+      color: var(--accent);
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+
+    .stat-label {
+      display: block;
+      font-family: "IBM Plex Sans", sans-serif;
+      font-size: 0.75rem;
+      line-height: 1.5;
+      color: var(--muted);
+      margin-top: 0.35rem;
+    }
+
+    /* ---------- Figures ---------- */
+
+    figure { margin: 1.75rem 0; }
+
+    figure img {
+      width: 100%;
+      height: auto;
+      border-radius: 4px;
+      display: block;
+      /* The paper's figures are drawn on white; keep them on white in both themes
+         rather than letting a dark page turn them into a glaring panel. */
+      background: var(--plate);
+      border: 1px solid var(--rule);
+      padding: 0.5rem;
+    }
+
+    figcaption {
+      font-family: "IBM Plex Sans", sans-serif;
+      font-size: 0.8125rem;
+      line-height: 1.6;
+      color: var(--muted);
+      margin-top: 0.75rem;
+    }
+
+    .fig-label { color: var(--accent); font-weight: 600; }
+
+    /* ---------- Tables (booktabs style) ---------- */
+
+    .table-wrap {
+      overflow-x: auto;
+      margin: 1.75rem 0 0.75rem;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .table-wrap:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: "IBM Plex Sans", sans-serif;
+      font-size: 0.875rem;
+      border-top: 2px solid var(--ink);
+      border-bottom: 2px solid var(--ink);
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+
+    /* The caption lives outside the scroll container, not in a <caption>: a <caption>
+       inherits the table's width, so on a narrow screen the note would be clipped and
+       could only be read by scrolling sideways. */
+    .table-figure { margin: 1.75rem 0; }
+    .table-figure .table-wrap { margin-top: 0; }
+    .table-figure figcaption { margin-top: 0.75rem; }
+
+    thead th {
+      font-weight: 600;
+      text-align: left;
+      padding: 0.6rem 0.9rem;
+      border-bottom: 1px solid var(--ink);
+      white-space: nowrap;
+    }
+
+    thead th.n, tbody td.n { text-align: right; }
+    thead th.c, tbody td.c { text-align: center; }
+
+    tbody td, tbody th {
+      padding: 0.55rem 0.9rem;
+      color: var(--ink);
+      white-space: nowrap;
+    }
+
+    tbody th {
+      font-weight: 400;
+      text-align: left;
+    }
+
+    tbody th em { font-style: italic; }
+
+    tbody tr:not(:last-child) td,
+    tbody tr:not(:last-child) th { border-bottom: 1px solid var(--rule); }
+
+    tbody tr.total td, tbody tr.total th {
+      border-top: 1px solid var(--ink);
+      font-weight: 600;
+    }
+
+    tbody tr.group th {
+      font-style: italic;
+      color: var(--muted);
+      padding-top: 0.7rem;
+    }
+
+    td.best { font-weight: 600; color: var(--accent); }
+
+    /* ---------- Callout ---------- */
+
+    .note {
+      border-left: 3px solid var(--accent);
+      background: var(--wash);
+      padding: 1rem 1.2rem;
+      border-radius: 0 5px 5px 0;
+      margin: 1.5rem 0;
+      font-size: 0.9375rem;
+    }
+
+    .note p + p { margin-top: 0.7rem; }
+
+    .note .note-title {
+      font-family: "IBM Plex Sans", sans-serif;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      display: block;
+      margin-bottom: 0.35rem;
+    }
+
+    /* ---------- Code / BibTeX ---------- */
+
+    .codeblock { position: relative; margin: 1.5rem 0; }
+
+    .codeblock pre {
+      background: var(--wash);
+      border: 1px solid var(--rule);
+      border-radius: 6px;
+      padding: 1.25rem 1.4rem;
+      overflow-x: auto;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.8125rem;
+      line-height: 1.65;
+      color: var(--ink);
+    }
+
+    .codeblock pre .c { color: var(--muted); }
+
+    .copy-btn {
+      position: absolute;
+      top: 0.7rem;
+      right: 0.7rem;
+      font-family: "IBM Plex Sans", sans-serif;
+      font-size: 0.75rem;
+      font-weight: 500;
+      padding: 0.35rem 0.7rem;
+      background: var(--paper);
+      border: 1px solid var(--rule);
+      border-radius: 5px;
+      color: var(--ink);
+      cursor: pointer;
+      transition: border-color 0.15s ease, color 0.15s ease;
+    }
+
+    .copy-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+    code.inline {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.85em;
+      background: var(--wash);
+      border: 1px solid var(--rule);
+      border-radius: 3px;
+      padding: 0.05em 0.35em;
+    }
+
+    /* ---------- Link block ---------- */
+
+    .linkblock {
+      border: 1px solid var(--rule);
+      border-radius: 6px;
+      padding: 1.1rem 1.3rem;
+      background: var(--wash);
+      margin-top: 1.25rem;
+    }
+    .linkblock a { font-weight: 600; }
+    .linkblock p + p { margin-top: 0.4rem; }
+    .linkblock .small {
+      font-family: "IBM Plex Sans", sans-serif;
+      font-size: 0.8125rem;
+      color: var(--muted);
+    }
+
+    /* ---------- Footer ---------- */
+
+    .footer { margin-top: 5rem; }
+
+    .footer-body {
+      font-family: "IBM Plex Sans", sans-serif;
+      font-size: 0.8125rem;
+      line-height: 1.7;
+      color: var(--muted);
+      padding-top: 1.25rem;
+    }
+
+    .footer-body p + p { margin-top: 0.8rem; }
+    .footer-body h2 {
+      font-family: "IBM Plex Sans", sans-serif;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ink);
+      margin-bottom: 0.4rem;
+    }
+    .footer-body h2 + p { margin-top: 0; }
+    .footer-body p + h2 { margin-top: 1.6rem; }
+
+    /* ---------- Motion (hero only, reduced-motion respected) ---------- */
+
+    @media (prefers-reduced-motion: no-preference) {
+      .hero > * {
+        opacity: 0;
+        transform: translateY(8px);
+        animation: rise 0.55s ease forwards;
+      }
+      .hero > *:nth-child(2) { animation-delay: 0.06s; }
+      .hero > *:nth-child(3) { animation-delay: 0.12s; }
+      .hero > *:nth-child(4) { animation-delay: 0.18s; }
+      .hero > *:nth-child(5) { animation-delay: 0.24s; }
+      .hero > *:nth-child(6) { animation-delay: 0.30s; }
+      .hero > *:nth-child(7) { animation-delay: 0.36s; }
+      .hero > *:nth-child(8) { animation-delay: 0.42s; }
+      .hero > *:nth-child(9) { animation-delay: 0.48s; }
+      @keyframes rise {
+        to { opacity: 1; transform: none; }
+      }
+    }
+
+    @media (max-width: 540px) {
+      .page { padding-top: 3rem; }
+      .section { margin-bottom: 3rem; }
+      .stat-value { font-size: 1.35rem; }
+    }
+
+    @media print {
+      .actions, .copy-btn, .skip { display: none; }
+      body { background: #fff; color: #000; }
+      .todo { border-color: #000; color: #000; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <div class="page">
+
+    <!-- ============ MASTHEAD ============ -->
+    <header class="hero section">
+      <p class="eyebrow">Reference-free · constructively lossless · model-inclusive</p>
+
+      <h1 class="title">DEDUCT: Deep DNA Sequence Compression by Using Orthogonal Transform Network Layers</h1>
+
+      <p class="authors">
+        Ahmet Atakan<sup>1,2</sup>,
+        M. Volkan Atalay<sup>3</sup>,
+        Rengul Cetin-Atalay<sup>4</sup>,
+        and A. Enis Cetin<sup>5</sup> <span class="member">(Fellow, IEEE)</span>
+      </p>
+
+      <ul class="affils">
+        <li><sup>1</sup>Department of Computer Engineering, Middle East Technical University, Ankara 06800, Turkey</li>
+        <li><sup>2</sup>Department of Computer Engineering, Erzincan Binali Yıldırım University, Erzincan 24002, Turkey</li>
+        <li><sup>3</sup>Department of Information Systems and Supply Chain Management, Loyola University Chicago, Chicago, IL 60611 USA</li>
+        <li><sup>4</sup>Department of Medicine, Section of Pulmonary and Critical Care Medicine, The University of Chicago, Chicago, IL 60637 USA</li>
+        <li><sup>5</sup>Department of Electrical and Computer Engineering, University of Illinois Chicago, Chicago, IL USA</li>
+      </ul>
+
+      <p class="corresp">Corresponding author: A. Enis Cetin (<a href="mailto:aecyy@uic.edu">aecyy@uic.edu</a>).</p>
+      <p class="status">Manuscript submitted to <strong>IEEE Access</strong>; the article DOI will be added on publication.</p>
+
+      <div class="actions">
+        <a class="btn btn-primary" href="#h-results">Results</a>
+        <a class="btn" href="#h-release">Release</a>
+        <a class="btn" href="#h-cite">Cite</a>
+        <span class="btn btn-pending" aria-disabled="true">Code: upon acceptance</span>
+        <span class="btn btn-pending" aria-disabled="true">Archive DOI: upon acceptance</span>
+      </div>
+      <p class="actions-note">The source code will be released at <a href="https://github.com/Cetin-Lab/deduct">github.com/Cetin-Lab/deduct</a> upon acceptance of the paper, and the archival DOI will be assigned with that release.</p>
+
+      <div class="rule-double" aria-hidden="true"></div>
+    </header>
+
+    <main id="main">
+
+      <!-- ============ 1. SUMMARY ============ -->
+      <section class="section" aria-labelledby="h-summary">
+        <h2 id="h-summary"><span class="num">1.</span>What DEDUCT does</h2>
+
+        <p class="lede">A collection of related genomes repeats most of its content across records. General-purpose coders and single-sequence DNA coders compress each record on its own, so a collection of near-identical strains costs close to the single-genome entropy of about 1.9 bits per base. DEDUCT makes the shared structure explicit before coding, and then codes the structure.</p>
+
+        <p>The front end is alignment-aware. It normalizes each assembly, separates the contigs of every assembly into <em>contig columns</em> (the <em>n</em>-th contig of each assembly forms one column), clusters each column with an FFT cross-correlation that is invariant to rotation and to strand, and aligns the members of each cluster to a consensus with a gap-aware global alignment. Rotation, strand, and insertions are recorded as invertible parameters. No external reference is used.</p>
+
+        <p>Each aligned matrix is compressed by a <em>trained coder</em>: a convolutional autoencoder whose bottleneck is a vertical block discrete cosine transform (DCT), applied along the inter-genome axis. After alignment, a column of the matrix is one locus sampled across genomes, so the DCT concentrates the signal on a few low-frequency coefficients. This route is the <em>learned path</em>. The compressed output holds the quantized latent, an <em>argmax residual</em> (the true symbol at every position where the decoder's prediction differs from the original), and the decoder weights. Sequences that join no cluster go to a global fallback: a length-ordered pool compressed with gzip, whose DEFLATE algorithm finds repeats within a 32 KiB window.</p>
+
+        <p>The method is <em>constructively lossless</em>. The residual is computed against the dequantized latent, the same input the decoder receives, and a margin rule writes a residual entry at every position whose top two logits are closer than a margin, so no arithmetic difference below half that margin can change a decoded symbol. A weaker model costs bytes, not correctness. Every reported bitrate counts the model weights inside the compressed output, and every compressed collection was decoded in an isolated process and compared with the input file by file.</p>
+
+        <ul class="stats">
+          <li>
+            <span class="stat-value">0.3755</span>
+            <span class="stat-label">F-BPB on 11.22 GB of <em>E. coli</em> / <em>Shigella</em> assemblies (<em>ecoli1</em>): a 21.2× ratio and a 95.28% space saving</span>
+          </li>
+          <li>
+            <span class="stat-value">0.0259</span>
+            <span class="stat-label">D-BPB of the trained coder on the 48.7% of <em>ecoli1</em> it codes, all 774 decoder networks included</span>
+          </li>
+          <li>
+            <span class="stat-value">0.0180</span>
+            <span class="stat-label">F-BPB across 67,190 human mitochondrial genomes, a 337.9× ratio</span>
+          </li>
+          <li>
+            <span class="stat-value">362,645</span>
+            <span class="stat-label">files decoded and checked against their SHA-256 digests across the paper's corpora, with zero failures</span>
+          </li>
+          <li>
+            <span class="stat-value">613</span>
+            <span class="stat-label">parameters in each stored decoder, 1,175 to 1,220 B per cluster in the compressed output</span>
+          </li>
+        </ul>
+        <p class="logos-caption"><em>ecoli1</em>: 2,397 assemblies, 1,016,248 records, 1.108 × 10<sup>10</sup> nucleotides, drawn from NCBI Pathogen Detection.</p>
+      </section>
+
+      <!-- ============ 2. PIPELINE AND CODEC ============ -->
+      <section class="section" aria-labelledby="h-method">
+        <h2 id="h-method"><span class="num">2.</span>The pipeline and the codec</h2>
+
+        <p>An orthogonal transform concentrates energy only if the axis along which it operates is coherent. Along a single genome it is not. Across a stack of aligned homologous genomes it is: each aligned column is a single locus, dominated by the consensus base plus sparse single-nucleotide deviations. Alignment supplies the coherence, and the transform runs along the inter-genome axis where the signal is highly similar.</p>
+
+        <figure>
+          <img src="assets/fig-system.png"
+               alt="Two-panel schematic of the DEDUCT pipeline. Panel (a): a FASTA collection passes through three numbered stages, (1) contig separation, (2) FFT clustering, and (3) gap-aware alignment, grouped in a dashed frame labeled alignment-aware preprocessing front end, into a conv + DCT autoencoder, which emits an argmax residual and decoder weights; these two boxes are grouped in a dashed frame labeled learned path. Contig separation also writes a byte-exact side channel, and sequences that do not join a cluster go to a global cross-contig fallback (gzip). All streams enter the compressed output. Panel (b): the data at each stage: M assemblies with contigs in assembly order; contig columns holding the n-th contig of every assembly; one cluster of homologous sequences, each rotated and on either strand, with a marker showing the same locus in every member; the aligned matrix X of H genomes by W consensus positions, with one highlighted column that is a single nearly constant locus; and what is stored: the sparse latent Z, the argmax misses R, plus the decoder weights. A legend maps the colors to A, C, G, T, and gap."
+               width="3483" height="2330" decoding="async">
+          <figcaption><span class="fig-label">Figure 1.</span> The DEDUCT pipeline. <strong>(a)</strong> Data flow from a FASTA collection to the compressed output: the alignment-aware preprocessing front end (blue; stages (1) to (3) of Section III-B, preceded by normalization), the learned path (orange; Sections III-C and III-D), the global cross-contig fallback (grey; Section III-E), and the side channel (red; Section III-E). Dashed arrows carry the sequences that join no cluster. <strong>(b)</strong> The data at each stage of the front end, from the assemblies to the aligned matrix <strong>X</strong> whose columns the transform exploits, and the components that the learned path stores.</figcaption>
+        </figure>
+
+        <p>The three front-end steps each solve a concrete problem. Contig separation groups the <em>n</em>-th record of every assembly into one column, so that homologous material is compared with homologous material. FFT cross-correlation recovers clusters although assemblers pick different linear start points on a circular replicon and may emit either strand. A target joins a cluster when its best match fraction is at least 0.6, and at most 30 clusters are seeded per column. Gap-aware alignment to a consensus built from the members at the cluster's most common length absorbs insertions and deletions; a member is accepted if its edit distance is at most 0.35 times the consensus length. Members that exceed this bound, clusters with fewer than 64 members, and clusters narrower than one full tile of 512 columns are routed to the fallback.</p>
+
+        <figure>
+          <img src="assets/fig-architecture.png"
+               alt="Two-panel figure of the DEDUCT codec. Panel (a), one tile through the codec. On the encode side, an aligned tile of H_b by W_t positions, one-hot over 5 channels, passes through a Conv2D from 5 to 32 channels with a 3 by 1 kernel, stride 2 by 1 and ReLU, then a Conv2D from 32 to C channels with the same kernel and stride, then a fixed orthonormal vertical block-DCT D, a soft threshold T with a learned theta, and a quantizer Q = round(Z/s). On the decode side, Q is stored with zero planes dropped as int8 or int16 plus gzip, dequantized to sQ, passed through the inverse DCT, two ConvTranspose2D layers to 5 logits, and a per-position argmax that gives the predicted tile. The residual plane R holds the true symbol at misses and near-ties (tau) and 0 elsewhere. Panel (b), the two dead zones to scale: the soft threshold with theta = e to the minus 3 = 0.05 and the quantizer with s = 16 are plotted on one axis of DCT coefficient values from minus 20 to 20; the quantizer dead zone of s/2 = 8.0 is shaded and the threshold sits entirely inside it."
+               width="2420" height="3689" loading="lazy" decoding="async">
+          <figcaption><span class="fig-label">Figure 2.</span> The DEDUCT codec. <strong>(a)</strong> One tile of an aligned matrix through the encoder (left) and the decoder (right); the shaded boxes, <strong>Q</strong> and <strong>R</strong>, and the decoder weights are what the compressed output holds, and the encoder is never evaluated during decoding. <strong>(b)</strong> The soft threshold and the quantizer on a common axis, to scale; at the proposed configuration, the threshold operates entirely inside the quantizer's dead zone.</figcaption>
+        </figure>
+
+        <p>Two convolutions with a 3 × 1 kernel and a 2 × 1 stride downsample the inter-genome axis and leave the sequence axis untouched; the kernel is one column wide so that the latent transports one column rather than a mixture of neighbors. The block DCT runs down the inter-genome axis, and a learnable soft threshold follows it. On the coding path the latent is quantized with a collection-wide step <em>s</em> = 16, and the quantizer's dead zone, two orders of magnitude above the learned threshold, accounts for more than 99.9% of the zeroed coefficients. Only the decoder half is stored: 613 parameters in float16 per cluster, with the DCT matrix regenerated from the block height. The prediction used for the residual is computed from the dequantized latent with the rounded weights, so the residual is taken against the exact network that runs during decoding. One model is trained from scratch per cluster with Adam at a learning rate of <span class="nowrap">5 × 10<sup>−3</sup></span>; every fifth epoch the compressed size is measured, and the weights kept are those that gave the smallest size.</p>
+      </section>
+
+      <!-- ============ 3. RESULTS ============ -->
+      <section class="section" aria-labelledby="h-results">
+        <h2 id="h-results"><span class="num">3.</span>Results</h2>
+
+        <p>Two bitrates are reported for every collection. <strong>D-BPB</strong> is the trained coder's cost over the bases it received: weights, latent, residual, and alignment metadata, divided by the bases of the learned path. <strong>F-BPB</strong> is what the entire pipeline costs over the entire collection, the fallback and the ambiguity exceptions included. Neither rate includes the side channel (the FASTA headers, the record order, and the contig membership), whose size scales with the number of records rather than with the number of bases. The compression ratio does include it: it is the normalized input bytes divided by the compressed output on disk, every byte counted. <em>Coverage</em>, the share of the called bases that reached the trained coder, is what makes F-BPB interpretable: at low coverage it measures the fallback rather than the learned path.</p>
+
+        <figure class="table-figure">
+        <div class="table-wrap" tabindex="0" role="region" aria-labelledby="cap-overview">
+          <table aria-labelledby="cap-overview">
+            <thead>
+              <tr>
+                <th scope="col">Collection</th>
+                <th scope="col" class="n">Size (MB)</th>
+                <th scope="col" class="n">D-BPB</th>
+                <th scope="col" class="n">F-BPB</th>
+                <th scope="col" class="n">Compressed (MB)</th>
+                <th scope="col" class="n">Ratio</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row"><em>ecoli1</em></th>
+                <td class="n">11,217</td><td class="n">0.0259</td><td class="n best">0.3755</td><td class="n">529.06</td><td class="n">21.2×</td>
+              </tr>
+              <tr>
+                <th scope="row"><em>S. enterica</em></th>
+                <td class="n">5,133</td><td class="n">0.6427</td><td class="n best">1.7961</td><td class="n">1,149.99</td><td class="n">4.5×</td>
+              </tr>
+              <tr>
+                <th scope="row">Mitochondrial</th>
+                <td class="n">1,119</td><td class="n">0.0163</td><td class="n best">0.0180</td><td class="n">3.31</td><td class="n">337.9×</td>
+              </tr>
+              <tr>
+                <th scope="row">SARS-CoV-2</th>
+                <td class="n">8,709</td><td class="n">0.0214</td><td class="n best">0.0592</td><td class="n">67.53</td><td class="n">129.0×</td>
+              </tr>
+              <tr>
+                <th scope="row">DNACorpus</th>
+                <td class="n">686</td><td class="n">--</td><td class="n best">2.1724</td><td class="n">186.17</td><td class="n">3.7×</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <figcaption id="cap-overview"><span class="fig-label">Table 1</span> (Table 2 of the paper). DEDUCT on the five collections, under one proposed configuration. D-BPB is the trained coder's rate over the bases it codes; F-BPB is the whole pipeline's rate over the whole collection. Compressed is the output on disk, side channel included; the ratio is taken over it. All sizes are decimal MB; every collection is byte-exact on every file.</figcaption>
+        </figure>
+
+        <p>On <em>ecoli1</em>, the largest and most fragmented input, the whole pipeline reaches 0.3755 F-BPB and a 21.2× ratio while the trained coder reaches 0.0259 D-BPB on the 48.7% of the corpus it codes; the mitochondrial and SARS-CoV-2 collections compress at 129 to 338×, and DNACorpus, where no cluster can form, marks the boundary of the operating regime.</p>
+
+        <p>On <em>ecoli1</em> the front end recovers 817 clusters across 612 contig columns, and the learned path codes 774 of them, spanning 5.40 × 10<sup>9</sup> aligned bases. The largest single cluster spans 1,205 of the 2,397 genomes. Averaged over all 774 clusters, the argmax accuracy before residual correction is 97.5%; the seven largest clusters average 99.2% and the 163 clusters admitted just above the admission threshold average 79.8%. Scaling the mitochondrial collection from 1,000 to 67,190 records improves the trained coder's rate from 0.0252 to 0.0163 D-BPB, because the same decoder is amortized over sixty-seven times as many sequences.</p>
+
+        <figure class="table-figure">
+        <div class="table-wrap" tabindex="0" role="region" aria-labelledby="cap-sizes">
+          <table aria-labelledby="cap-sizes">
+            <thead>
+              <tr>
+                <th scope="col">Dataset</th>
+                <th scope="col" class="n">Latent (Z)</th>
+                <th scope="col" class="n">Residual (R)</th>
+                <th scope="col" class="n">Weights (W)</th>
+                <th scope="col" class="n">Align. meta (M)</th>
+                <th scope="col" class="n"><em>N</em><sub>neural</sub></th>
+                <th scope="col" class="n">Fallback (G)</th>
+                <th scope="col" class="n">Except. (E)</th>
+                <th scope="col" class="n"><em>N</em><sub>total</sub></th>
+                <th scope="col" class="n">Side ch. (S)</th>
+                <th scope="col" class="n">Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row"><em>ecoli1</em></th>
+                <td class="n">6.929</td><td class="n">5.776</td><td class="n">0.926</td><td class="n">3.831</td><td class="n">5.402</td><td class="n">502.806</td><td class="n">0.014</td><td class="n">11.085</td><td class="n">8.681</td><td class="n best">529.058</td>
+              </tr>
+              <tr>
+                <th scope="row"><em>S. enterica</em></th>
+                <td class="n">3.355</td><td class="n">74.702</td><td class="n">0.047</td><td class="n">11.055</td><td class="n">1.110</td><td class="n">1059.816</td><td class="n">0.008</td><td class="n">5.118</td><td class="n">0.994</td><td class="n best">1149.988</td>
+              </tr>
+              <tr>
+                <th scope="row">Mitochondrial</th>
+                <td class="n">0.065</td><td class="n">1.861</td><td class="n">0.002</td><td class="n">0.311</td><td class="n">1.102</td><td class="n">0.205</td><td class="n">0.066</td><td class="n">1.113</td><td class="n">0.801</td><td class="n best">3.311</td>
+              </tr>
+              <tr>
+                <th scope="row">SARS-CoV-2</th>
+                <td class="n">1.342</td><td class="n">11.996</td><td class="n">0.069</td><td class="n">6.393</td><td class="n">7.390</td><td class="n">40.479</td><td class="n">3.895</td><td class="n">8.671</td><td class="n">3.341</td><td class="n best">67.528</td>
+              </tr>
+              <tr>
+                <th scope="row">DNACorpus</th>
+                <td class="n">0.000</td><td class="n">0.000</td><td class="n">0.000</td><td class="n">0.000</td><td class="n">0.000</td><td class="n">186.171</td><td class="n">0.000</td><td class="n">0.686</td><td class="n">0.001</td><td class="n best">186.172</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <figcaption id="cap-sizes"><span class="fig-label">Table 2</span> (Table 3 of the paper). Component sizes of the compressed output, per corpus: decimal MB (10<sup>6</sup> B), base counts <em>N</em><sub>neural</sub> and <em>N</em><sub>total</sub> in Gb (10<sup>9</sup>). The rates of Table 1 follow from these columns; the side channel S enters neither rate. Total is the output on disk and exceeds the component sum only by the small manifest. Coverage quoted in the text is over called (ACGT) bases, so it can exceed <em>N</em><sub>neural</sub> / <em>N</em><sub>total</sub>.</figcaption>
+        </figure>
+
+        <p>The side channel scales with the number of records rather than the number of bases, so it is 24.2% of the mitochondrial compressed output but 1.6% of <em>ecoli1</em>'s; on <em>ecoli1</em> the latent is the largest learned-path term, and on the other three coded collections the residual is.</p>
+
+        <h3>The operating regime, measured on SARS-CoV-2</h3>
+
+        <p>The SARS-CoV-2 collection is 291,017 complete genomes, the total of a per-year quota over 2020 to 2026: 50,000 records where a publication year has that many, and every record available at the fetch date where it does not. Each year is compressed as its own collection, trained only on its own data.</p>
+
+        <figure class="table-figure">
+        <div class="table-wrap" tabindex="0" role="region" aria-labelledby="cap-regime">
+          <table aria-labelledby="cap-regime">
+            <thead>
+              <tr>
+                <th scope="col">Year</th>
+                <th scope="col" class="n">Records</th>
+                <th scope="col" class="n">Bases</th>
+                <th scope="col" class="n">Clusters</th>
+                <th scope="col" class="n">Coverage</th>
+                <th scope="col" class="n">D-BPB</th>
+                <th scope="col" class="n">F-BPB</th>
+                <th scope="col" class="n">Ratio</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><th scope="row">2020</th><td class="n">31,782</td><td class="n">947,053,903</td><td class="n">4</td><td class="n">98.2%</td><td class="n">0.0082</td><td class="n">0.0106</td><td class="n">579.3×</td></tr>
+              <tr><th scope="row">2021</th><td class="n">50,000</td><td class="n">1,489,045,213</td><td class="n">8</td><td class="n">97.4%</td><td class="n">0.0148</td><td class="n">0.0188</td><td class="n">357.6×</td></tr>
+              <tr><th scope="row">2022</th><td class="n">50,000</td><td class="n">1,448,830,479</td><td class="n">7</td><td class="n">83.3%</td><td class="n">0.0217</td><td class="n">0.0697</td><td class="n">110.3×</td></tr>
+              <tr><th scope="row">2023</th><td class="n">50,000</td><td class="n">1,433,497,717</td><td class="n">10</td><td class="n">76.0%</td><td class="n">0.0371</td><td class="n">0.1160</td><td class="n">67.8×</td></tr>
+              <tr><th scope="row">2024</th><td class="n">50,000</td><td class="n">1,476,787,104</td><td class="n">8</td><td class="n">93.6%</td><td class="n">0.0138</td><td class="n">0.0271</td><td class="n">265.2×</td></tr>
+              <tr><th scope="row">2025</th><td class="n">50,000</td><td class="n">1,429,940,110</td><td class="n">15</td><td class="n">76.1%</td><td class="n">0.0342</td><td class="n">0.0969</td><td class="n">80.5×</td></tr>
+              <tr><th scope="row">2026</th><td class="n">9,235</td><td class="n">272,321,272</td><td class="n">5</td><td class="n">89.2%</td><td class="n">0.0269</td><td class="n">0.0501</td><td class="n">150.4×</td></tr>
+              <tr class="total"><th scope="row">all seven</th><td class="n">291,017</td><td class="n">8,497,475,798</td><td class="n">57</td><td class="n">87.0%</td><td class="n">0.0214</td><td class="n">0.0592</td><td class="n">129.0×</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <figcaption id="cap-regime"><span class="fig-label">Table 3</span> (Supplementary Table S6 of the paper, Section S4). SARS-CoV-2 by publication year, each year its own collection under the proposed configuration; the last row is the seven years summed. 2020 is taken whole and 2026 comprises the records available up to the fetch date; 50,000 is 7.8% of 2021, 5.0% of 2022 and 4.0% of 2023. Within a year the quota is the first 50,000 records in the order the search returned.</figcaption>
+        </figure>
+
+        <p>The coverage column tracks the ambiguity content of each year's consensus genomes rather than time: ambiguity content runs 0.05%, 0.06%, 2.72%, 3.95%, 0.66%, 4.05% and 0.89% for 2020 through 2026, a Spearman ρ of −0.96 and a Pearson r of −0.99 against that column.</p>
+
+        <p>The cause is the separation step, which removes non-ACGT characters before clustering; each removal shifts every later coordinate, so a record with many uncalled bases can no longer be rotation-aligned with its relatives. Such records are set aside because of missing data rather than sequence divergence. The learned path's advantage shrinks gradually as coverage falls: the rate of the trained coder is 13.2× below that of the pool where it receives 98.2% of the bases (2020) and 8.7× below it where it receives 76.1% (2025); on <em>S. enterica</em>, at 21.7% coverage, its rate is still 3.3× below that of the pool.</p>
+      </section>
+
+      <!-- ============ 4. ABLATION ============ -->
+      <section class="section" aria-labelledby="h-ablation">
+        <h2 id="h-ablation"><span class="num">4.</span>What the ablation shows</h2>
+
+        <p>Replacing the DCT with the identity, with nothing else changed, drops the argmax accuracy from 0.988 to 0.433 and increases the compressed size by a factor of 201.7; the transform amplifies the preprocessing stage rather than acting as an independent source of gain. The contig-column decomposition is evaluated on the full <em>E. coli</em> corpus: clustering within columns delivers 2.2× as much of the corpus to the learned path as clustering a column-free pool. The two coding paths are complementary. Routing the learned path's own input through the fallback pool costs 87× its rate, because in the pool each sequence's nearest copy lies far outside DEFLATE's search window, while the sequences the front end declines cannot be aligned at all, so only the fallback can code them. A single shared model across clusters is ruled out: a model trained on one cluster and applied frozen to another predicts at the level expected by chance, so the compressed output carries one decoder per cluster. What sharing would provide is training time, since a warm-started cluster converges in 3.5× fewer epochs.</p>
+      </section>
+
+      <!-- ============ 5. ACCOUNTING ============ -->
+      <section class="section" aria-labelledby="h-accounting">
+        <h2 id="h-accounting"><span class="num">5.</span>Model-inclusive accounting</h2>
+
+        <p>A decoder that re-executes a trained network needs that network, so the weights are part of the compressed representation. DEDUCT counts them in every reported size. The class of learnable lossless coders has no shared benchmark; mutually comparable rates exist only as the re-runs of Sun et al., in which every coder ran under one protocol on one machine, and there the previous learnable coders operate at 1.845 to 1.930 BPB. Where a static model is used, its bytes are usually excluded. For DNA-BiLSTM the effect has been quantified in print: its mean rate rises from 1.907 BPB with the model excluded to 6.991 BPB with it included.</p>
+
+        <p>Because PMKLC's checkpoint is public, the same rule can be applied to it. Counting the 2,070,216 B static model once per dataset on PMKLC's own nine-dataset benchmark raises PMKLC-S's reported mean from 1.845 to 2.724 BPB. Two qualifications bound that mean. The penalty falls as 1/<em>N</em> and is driven by the small files: +2.65 BPB on the 6.25 MB dataset against +0.016 BPB on the 1.05 GB one. It is a mean over datasets; coded as one collection, the nine would have paid +0.008 BPB for the same model.</p>
+
+        <div class="note">
+          <span class="note-title">Direct comparison on identical input</span>
+          <p>PMKLC-S was run with its released code and static public model on the same 16,568,048 bases that DEDUCT codes for the 1,000-record mitochondrial subset. It reached <strong>0.0703 BPB</strong> over those bases, and <strong>1.0700 BPB</strong> once the model is counted as this paper's protocol requires. DEDUCT's model-inclusive rate on the same input is <strong>0.0255 F-BPB</strong>, with all 1,000 files byte-exact.</p>
+          <p>The decompression of PMKLC-S could not be verified: in the authors' environment, the released decompressor returned a file of the correct length whose contents diverge from the input after 121 bytes and differ in 74% of the file, on two datasets, with and without TF32. The paper does not conclude that the method is lossy; the fault may lie in the environment, and the compressed size is reported as unconfirmed.</p>
+        </div>
+
+        <p>The protocol penalizes DEDUCT more than the previous coders: their models are fixed and amortize over any corpus, whereas DEDUCT's decoders grow with the cluster count and amortize over none. The weight term is 0.18% of the <em>ecoli1</em> compressed output. To our knowledge, no previous learnable, reference-free, byte-exact method exploits cross-genome redundancy at the collection scale, and none establishes a model-inclusive bitrate below 1 BPB.</p>
+      </section>
+
+      <!-- ============ 6. THROUGHPUT ============ -->
+      <section class="section" aria-labelledby="h-throughput">
+        <h2 id="h-throughput"><span class="num">6.</span>Throughput and memory</h2>
+
+        <p>Compression carries the training epochs and decompression does not. On <em>ecoli1</em> (11.22 GB), compression takes 7,811.5 s in total, of which 734.4 s is clustering, 6,181.3 s the overlapped alignment-and-coding span (model training is 6,174.0 s of it, 7.98 s per cluster over the 774 coded clusters), and 875.4 s the fallback. Decompression with a per-file SHA-256 check in an isolated process takes 210.2 s. That is 1.44 MB/s in and 53.4 MB/s out. Across the learned-path corpora, decompression is 2.7 to 58× faster than compression, and 138× on DNACorpus, where nothing is trained.</p>
+
+        <figure class="table-figure">
+        <div class="table-wrap" tabindex="0" role="region" aria-labelledby="cap-speed">
+          <table aria-labelledby="cap-speed">
+            <thead>
+              <tr>
+                <th scope="col">Method</th>
+                <th scope="col" class="n">Compression</th>
+                <th scope="col" class="n">Decompression</th>
+                <th scope="col" class="n">11.08 Gbp</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row"><strong>DEDUCT</strong> (measured)</th>
+                <td class="n">1.44 MB/s</td><td class="n">53.4 MB/s</td><td class="n best">2.2 hours</td>
+              </tr>
+              <tr class="group"><th scope="row" colspan="4">(a) Reported separately for each direction</th></tr>
+              <tr>
+                <th scope="row">DZip (bootstrap)</th>
+                <td class="n">0.3 min/MB</td><td class="n">0.5 min/MB</td><td class="n">6.2 days</td>
+              </tr>
+              <tr>
+                <th scope="row">DZip (combined)</th>
+                <td class="n">2.2 min/MB</td><td class="n">2.5 min/MB</td><td class="n">36.2 days</td>
+              </tr>
+              <tr class="group"><th scope="row" colspan="4">(b) Reported as one combined rate over both directions</th></tr>
+              <tr>
+                <th scope="row">PMKLC-M</th>
+                <td class="c" colspan="2">60.9 KB/s</td><td class="n">2.1 days</td>
+              </tr>
+              <tr>
+                <th scope="row">DeepGeCo (PLUS)</th>
+                <td class="c" colspan="2">23.7 KB/s</td><td class="n">5.4 days</td>
+              </tr>
+              <tr>
+                <th scope="row">DeepGeCo (ULTRA)</th>
+                <td class="c" colspan="2">17.0 KB/s</td><td class="n">7.6 days</td>
+              </tr>
+              <tr>
+                <th scope="row">GeneFormer</th>
+                <td class="c" colspan="2">3.2 KB/s</td><td class="n">40.2 days</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <figcaption id="cap-speed"><span class="fig-label">Table 4</span> (Supplementary Table S13 of the paper, Section S11). Throughput, and the implied running times for the 11.08 Gbp <em>ecoli1</em> corpus. DEDUCT's rates are measured; the published rates are as reported on each paper's own input and hardware, extrapolated linearly in bases, which is optimistic for methods whose cost grows faster and therefore a floor on the gap. The per-corpus running times by stage are in Supplementary Table S12.</figcaption>
+        </figure>
+
+        <p>All experiments use a single NVIDIA GeForce RTX 5090 GPU (32 GB), an AMD Ryzen 9 9950X3D CPU, and 64 GB of DDR5 RAM. GPU memory peaks during clustering, which holds the Fourier transforms of every sequence in the largest contig column in memory at once: 22.1 GB on <em>ecoli1</em> and 26.6 GB on <em>S. enterica</em>, the highest observed. Compression itself peaks near 11 GB, because only one cluster's model is in memory at a time. The clustering cache is limited by free VRAM and falls back to recomputation, so the pipeline runs on GPUs with less memory, at lower speed.</p>
+      </section>
+
+      <!-- ============ 7. RELEASE ============ -->
+      <section class="section" id="availability" aria-labelledby="h-release">
+        <h2 id="h-release"><span class="num">7.</span>Release</h2>
+
+        <p>The DEDUCT implementation will be released at <a href="https://github.com/Cetin-Lab/deduct">github.com/Cetin-Lab/deduct</a> upon acceptance of the paper and archived with a DOI at that time, under the <a href="https://polyformproject.org/licenses/noncommercial/1.0.0">PolyForm Noncommercial 1.0.0</a> license: noncommercial use, modification, and redistribution are permitted; the license is not OSI-approved.</p>
+
+        <p>The repository will contain:</p>
+        <ul class="plain">
+          <li><strong>The implementation</strong>: the front end (normalization, contig separation, FFT clustering, gap-aware alignment), the trained coder with its argmax residual, the global fallback, and the side channel, behind the <code class="inline">deduct</code> command line.</li>
+          <li><strong>The configuration</strong>: the proposed configuration, fixed once and used unchanged for every corpus in the paper, with no per-dataset tuning.</li>
+          <li><strong>The fetch script and the accession lists</strong>: every collection except DNACorpus is public NCBI data, and the lists with the fetch script rebuild each corpus and check it against a recorded digest.</li>
+          <li><strong>The provenance file</strong>: records the fetch dates, including the mid-2026 date up to which the 2026 SARS-CoV-2 records were taken.</li>
+          <li><strong>The test suite</strong> (52 tests covering the coders, the front end, the exceptions blob, and an end-to-end round trip).</li>
+        </ul>
+
+        <p><strong>Corpus sizes.</strong> <em>ecoli1</em> is 11.22 GB (2,397 assemblies); <em>S. enterica</em> is 5.20 GB as downloaded and 1.19% smaller after normalization (1,024 genomes); the mitochondrial collection is 1.12 GB (67,190 records) and its 1,000-record subset 16.7 MB; the SARS-CoV-2 years are 0.95, 1.50, 1.50, 1.50, 1.49, 1.50 and 0.28 GB for 2020 through 2026 (291,017 genomes in total); DNACorpus is 0.69 GB (17 files) and should be obtained from its authors' distribution.</p>
+      </section>
+
+      <!-- ============ 8. REPRODUCE ============ -->
+      <section class="section" aria-labelledby="h-repro">
+        <h2 id="h-repro"><span class="num">8.</span>Reproducing a result</h2>
+
+        <p>Every corpus in the paper is compressed by the same command in the default configuration, differing only in the input directory. Verification decompresses in an isolated process and compares each reconstructed file against the SHA-256 digest taken at separation time.</p>
+
+        <div class="codeblock">
+          <button class="copy-btn" type="button" data-copy="repro">Copy</button>
+          <pre id="repro"><code><span class="c"># compress a corpus directory into a compressed output. --checksums stores a</span>
+<span class="c"># SHA-256 digest per input file; digest storage is off by default.</span>
+deduct compress &lt;corpus&gt; &lt;out&gt; --checksums
+
+<span class="c"># decompress in an isolated process and compare every file with its digest.</span>
+deduct verify &lt;out&gt;</code></pre>
+        </div>
+
+        <p>Every compressed output behind the tables was written with digests, and the reported sizes subtract the stored digest bytes back out exactly, because the digests are a separable side-channel term; on the mitochondrial collection they are roughly half of the compressed output, 6.03 MB against 3.31 MB without them. Over the 362,645 files of the paper, verification reports zero failures. All runs fix the random seeds, and both the encoder and the decoder restrict cuDNN to deterministic algorithms and disable TF32; the margin rule of Section 1 makes the decoded symbols independent of the arithmetic below half the margin.</p>
+
+        <p>Reconstruction is exact with respect to the normalized form of the input: wrapped sequence lines joined into one line per record, sequences made upper-case, and each record's index appended to its header. Upper-casing is the one deliberately lossy step, since soft-masking annotations are discarded. The learning rate is the only hyper-parameter that can vary per corpus, and it is <span class="nowrap">5 × 10<sup>−3</sup></span> for every corpus reported.</p>
+      </section>
+
+      <!-- ============ 9. EXTENDED NOTES ============ -->
+      <section class="section" aria-labelledby="h-notes">
+        <h2 id="h-notes"><span class="num">9.</span>Extended notes</h2>
+
+        <div class="linkblock">
+          <p><a href="notes.html">Extended supplementary notes (W1 to W10)</a></p>
+          <p class="small">A companion page to this one.</p>
+        </div>
+      </section>
+
+      <!-- ============ 10. CITATION ============ -->
+      <section class="section" aria-labelledby="h-cite">
+        <h2 id="h-cite"><span class="num">10.</span>Citation</h2>
+
+        <p>The manuscript is under review at IEEE Access. The DOI field is a placeholder until one is assigned.</p>
+
+        <div class="codeblock">
+          <button class="copy-btn" type="button" data-copy="bibtex">Copy BibTeX</button>
+          <pre id="bibtex"><code>@article{atakan2026deduct,
+  author  = {Atakan, Ahmet and Atalay, M. Volkan and
+             Cetin-Atalay, Rengul and Cetin, A. Enis},
+  title   = {{DEDUCT}: Deep {DNA} Sequence Compression by Using
+             Orthogonal Transform Network Layers},
+  journal = {IEEE Access},
+  year    = {2026},
+  note    = {submitted}
+}</code></pre>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- ============ FOOTER ============ -->
+    <footer class="footer">
+      <div class="rule-double" aria-hidden="true"></div>
+
+      <ul class="logos">
+        <li>
+          <a class="logo-plate" href="https://www.metu.edu.tr">
+            <img src="assets/metu-logo.svg" alt="Middle East Technical University">
+          </a>
+        </li>
+        <li>
+          <a class="logo-plate" href="https://www.uic.edu/">
+            <img src="assets/uic-logo.png" alt="University of Illinois Chicago">
+          </a>
+        </li>
+        <li>
+          <a class="logo-plate" href="https://www.uchicago.edu/">
+            <img src="assets/uchicago-logo.svg" alt="The University of Chicago">
+          </a>
+        </li>
+        <li>
+          <a class="logo-plate" href="https://www.tubitak.gov.tr/">
+            <img class="logo-tall" src="assets/tubitak-logo.svg" alt="TÜBİTAK, the Scientific and Technological Research Council of Türkiye">
+          </a>
+        </li>
+      </ul>
+      <p class="logos-caption">Institution and funder marks are the trademarks of their owners and are shown here to identify author affiliation and funding only. Erzincan Binali Yıldırım University (affiliation 2) and Loyola University Chicago (affiliation 3) are listed in the masthead; no marks are shown for them.</p>
+
+      <div class="footer-body">
+        <h2>Acknowledgment</h2>
+        <p>This work was supported by the Scientific and Technological Research Council of Türkiye (TÜBİTAK) under the 2214-A International Research Fellowship Program for PhD Students (2024). The international research fellowship of the first author was hosted by Prof. Dr. A. Enis Cetin at the University of Illinois Chicago.</p>
+
+        <h2>Data</h2>
+        <p>Every collection except DNACorpus is public NCBI data. The <em>E. coli</em> / <em>Shigella</em> and <em>S. enterica</em> panels are drawn from NCBI Pathogen Detection; the mitochondrial and SARS-CoV-2 collections are retrieved from NCBI. The accession lists, fetch script, and provenance file of the code release rebuild each corpus and check it against a recorded digest.</p>
+
+        <h2>Code and license</h2>
+        <p>Repository: <a href="https://github.com/Cetin-Lab/deduct">github.com/Cetin-Lab/deduct</a> (code to be released upon acceptance of the paper). Archive DOI: assigned with the release. License: PolyForm Noncommercial 1.0.0.</p>
+
+        <h2>Contact</h2>
+        <p>Corresponding author: A. Enis Cetin, <a href="mailto:aecyy@uic.edu">aecyy@uic.edu</a>.</p>
+      </div>
+    </footer>
+
+  </div>
+
+  <script>
+    // Copy buttons: each carries data-copy pointing at the id of the <pre> to copy.
+    document.querySelectorAll('.copy-btn').forEach(function (btn) {
+      var original = btn.textContent;
+      btn.addEventListener('click', async function () {
+        var target = document.getElementById(btn.dataset.copy);
+        if (!target) return;
+        try {
+          await navigator.clipboard.writeText(target.innerText);
+          btn.textContent = 'Copied';
+        } catch (err) {
+          btn.textContent = 'Copy failed';
+        }
+        setTimeout(function () { btn.textContent = original; }, 1600);
+      });
+    });
+  </script>
+</body>
+</html>

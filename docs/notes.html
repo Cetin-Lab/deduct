@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>DEDUCT: Extended Supplementary Notes</title>
+  <meta name="description" content="Extended supplementary notes for DEDUCT: the material moved out of the paper's Supplementary Materials, organized as Sections W1 to W10 mirroring Supplementary Sections S1 to S11.">
+
+  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#FBFBF9">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)"  content="#15181B">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=STIX+Two+Text:ital,wght@0,400;0,600;1,400&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@400&amp;display=swap" rel="stylesheet">
+
+  <style>
+    /* ============================================================
+       Design language: "typeset first page of a paper"
+       - STIX Two Text: a serif drawn for scientific publishing
+       - IBM Plex Sans/Mono: labels, buttons, code
+       - Double rule (thick + thin): the classic journal masthead
+       - Booktabs table style: the web equivalent of LaTeX tables
+       Light is the primary palette; the dark variant below keeps the
+       same character (paper/ink/oxblood) rather than inverting it.
+       ============================================================ */
+
+    :root {
+      --paper:  #FBFBF9;
+      --ink:    #1C2025;
+      --muted:  #5C636B;
+      --accent: #7C2B33;   /* oxblood */
+      --rule:   #D9DAD4;
+      --wash:   #F1F1EC;
+      --plate:  #FFFFFF;   /* logo plates: always white, so marks render as issued */
+      --shadow: rgba(28, 32, 37, 0.06);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --paper:  #15181B;
+        --ink:    #E6E3DE;
+        --muted:  #9BA1A8;
+        --accent: #C98089;  /* the same oxblood, lifted until it clears 4.5:1 on the dark ground */
+        --rule:   #333940;
+        --wash:   #1D2126;
+        --plate:  #FFFFFF;
+        --shadow: rgba(0, 0, 0, 0.4);
+      }
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: "STIX Two Text", Georgia, serif;
+      font-size: 17px;
+      line-height: 1.75;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    ::selection { background: var(--accent); color: var(--paper); }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+    :focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+      border-radius: 2px;
+    }
+
+    .skip {
+      position: absolute;
+      left: -9999px;
+      top: 0;
+      font-family: "IBM Plex Sans", sans-serif;
+      font-size: 0.875rem;
+      background: var(--ink);
+      color: var(--paper);
+      padding: 0.6rem 1rem;
+      z-index: 10;
+    }
+    .skip:focus { left: 0.75rem; top: 0.75rem; }
+
+    .page {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 4.5rem 1.5rem 3rem;
+    }
+
+    .section { margin-bottom: 4rem; }
+
+    /* ---------- Masthead (hero) ---------- */
+
+    .eyebrow {
+      font-family: "IBM Plex Sans", sans-serif;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.25rem;
+    }
+
+    .title {
+      font-size: clamp(1.6rem, 4.2vw, 2.35rem);
+      font-weight: 600;
+      line-height: 1.22;
+      letter-spacing: -0.01em;
+      margin-bottom: 1.1rem;
+      text-wrap: balance;
+    }
+
+    .authors {
+      font-size: 1.125rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .authors sup, .affils sup {
+      color: var(--accent);
+      font-size: 0.7em;
+      margin-left: 1px;
+    }
+
+    .authors .member {
+      font-family: "IBM Plex Sans", sans-serif;
+      font-size: 0.8125rem;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .affils {
+      font-family: "IBM Plex Sans", sans-serif;
+      font-size: 0.875rem;
+      line-height: 1.6;
+      color: var(--muted);
+      margin-bottom: 1rem;
+      list-style: none;
+    }
+
+    .affils li { margin-bottom: 0.15rem; }
+    .affils sup { margin-right: 0.35rem; }
+
+    .corresp, .status {
+      font-family: "IBM Plex Sans", sans-serif;
+      font-size: 0.875rem;
+      color: var(--muted);
+    }
+    .corresp { margin-bottom: 0.4rem; }
+    .status { margin-bottom: 1.5rem; }
+    .status strong { color: var(--ink); font-weight: 600; }
+
+    /* A placeholder that the author must replace before the site goes public.
+       Rendered as a visible chip so it cannot be mistaken for a real address. */
+    .todo {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.8em;
+      color: var(--accent);
+      border: 1px dashed var(--accent);
+      border-radius: 3px;
+      padding: 0.05em 0.4em;
+      white-space: nowrap;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .btn {
+      font-family: "IBM Plex Sans", sans-serif;
+      font-size: 0.875rem;
+      font-weight: 500;
+      padding: 0.55rem 1.1rem;
+      border: 1px solid var(--ink);
+      border-radius: 6px;
+      color: var(--ink);
+      transition: background 0.15s ease, color 0.15s ease;
+      display: inline-block;
+    }
+
+    .btn:hover { background: var(--wash); text-decoration: none; }
+
+    .btn-primary { background: var(--ink); color: var(--paper); }
+    .btn-primary:hover { background: var(--accent); border-color: var(--accent); color: var(--paper); }
+
+    /* A link that does not exist yet is shown as a dashed, non-interactive chip
+       rather than as a dead <a href="#">. */
+    .btn-pending {
+      border-style: dashed;
+      border-color: var(--rule);
+      color: var(--muted);
+      cursor: default;
+    }
+    .btn-pending .todo { border: 0; padding: 0; margin-left: 0.35rem; }
+
+    .actions-note {
+      font-family: "IBM Plex Sans", sans-serif;
+      font-size: 0.8125rem;
+      color: var(--muted);
+      margin-bottom: 2.25rem;
+    }
+
+    /* Journal masthead rule: thick + thin */
+    .rule-double {
+      height: 7px;
+      border-top: 3px solid var(--ink);
+      border-bottom: 1px solid var(--ink);
+    }
+
+    /* ---------- Institution logos ---------- */
+
+    .logos {
+      display: grid;
+      /* Two across rather than four: at 760 px of column width four plates leave the
+         bilingual METU wordmark about 23 px tall, which is below legibility. */
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.75rem;
+      align-items: stretch;
+      margin: 2.25rem 0 0;
+      list-style: none;
+    }
+
+    .logos li { display: flex; }
+
+    .logo-plate {
+      background: var(--plate);
+      border: 1px solid var(--rule);
+      border-radius: 6px;
+      padding: 0.9rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      min-height: 88px;
+      box-shadow: 0 1px 2px var(--shadow);
+      transition: border-color 0.15s ease;
+    }
+
+    .logo-plate:hover { border-color: var(--accent); text-decoration: none; }
+
+    .logo-plate img {
+      display: block;
+      max-width: 100%;
+      width: auto;
+      height: auto;
+      max-height: 54px;
+    }
+
+    /* The TÜBİTAK mark is vertical; give it a little more height so the
+       wordmark under the triangle stays legible next to the horizontal marks. */
+    .logo-plate img.logo-tall { max-height: 66px; }
+
+    /* Below ~480 px two plates leave the widest wordmark under 25 px tall; stack instead. */
+    @media (max-width: 480px) {
+      .logos { grid-template-columns: 1fr; }
+    }
+
+    .logos-caption {
+      font-family: "IBM Plex Sans", sans-serif;
+      font-size: 0.75rem;
+      line-height: 1.6;
+      color: var(--muted);
+      margin-top: 0.7rem;
+    }
+
+    /* ---------- Section headings ---------- */
+
+    h2 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 1.1rem;
+      scroll-margin-top: 1.5rem;
+    }
+
+    h2 .num {
+      color: var(--accent);
+      margin-right: 0.45rem;
+      font-variant-numeric: lining-nums;
+    }
+
+    h3 {
+      font-family: "IBM Plex Sans", sans-serif;
+      font-size: 0.9375rem;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      margin: 2rem 0 0.6rem;
+    }
+
+    .section p + p { margin-top: 1rem; }
+
+    .lede { font-size: 1.0625rem; }
+
+    .nowrap { white-space: nowrap; }
+
+    ul.plain, ol.plain { margin: 1rem 0 0 1.15rem; }
+    ul.plain li, ol.plain li { margin-bottom: 0.5rem; }
+
+    dl.slots { margin-top: 1rem; }
+    dl.slots dt {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.8125rem;
+      color: var(--accent);
+      margin-top: 0.9rem;
+    }
+    dl.slots dd { font-size: 0.9375rem; color: var(--muted); }
+
+    /* ---------- Headline numbers ---------- */
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1px;
+      background: var(--rule);
+      border: 1px solid var(--rule);
+      border-radius: 6px;
+      overflow: hidden;
+      margin: 1.75rem 0 0.75rem;
+      list-style: none;
+    }
+
+    .stats li {
+      background: var(--paper);
+      padding: 1rem 1.1rem;
+    }
+
+    .stat-value {
+      display: block;
+      font-size: 1.6rem;
+      font-weight: 600;
+      line-height: 1.15;
+      color: var(--accent);
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+
+    .stat-label {
+      display: block;
+      font-family: "IBM Plex Sans", sans-serif;
+      font-size: 0.75rem;
+      line-height: 1.5;
+      color: var(--muted);
+      margin-top: 0.35rem;
+    }
+
+    /* ---------- Figures ---------- */
+
+    figure { margin: 1.75rem 0; }
+
+    figure img {
+      width: 100%;
+      height: auto;
+      border-radius: 4px;
+      display: block;
+      /* The paper's figures are drawn on white; keep them on white in both themes
+         rather than letting a dark page turn them into a glaring panel. */
+      background: var(--plate);
+      border: 1px solid var(--rule);
+      padding: 0.5rem;
+    }
+
+    figcaption {
+      font-family: "IBM Plex Sans", sans-serif;
+      font-size: 0.8125rem;
+      line-height: 1.6;
+      color: var(--muted);
+      margin-top: 0.75rem;
+    }
+
+    .fig-label { color: var(--accent); font-weight: 600; }
+
+    /* ---------- Tables (booktabs style) ---------- */
+
+    .table-wrap {
+      overflow-x: auto;
+      margin: 1.75rem 0 0.75rem;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .table-wrap:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: "IBM Plex Sans", sans-serif;
+      font-size: 0.875rem;
+      border-top: 2px solid var(--ink);
+      border-bottom: 2px solid var(--ink);
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+
+    /* The caption lives outside the scroll container, not in a <caption>: a <caption>
+       inherits the table's width, so on a narrow screen the note would be clipped and
+       could only be read by scrolling sideways. */
+    .table-figure { margin: 1.75rem 0; }
+    .table-figure .table-wrap { margin-top: 0; }
+    .table-figure figcaption { margin-top: 0.75rem; }
+
+    thead th {
+      font-weight: 600;
+      text-align: left;
+      padding: 0.6rem 0.9rem;
+      border-bottom: 1px solid var(--ink);
+      white-space: nowrap;
+    }
+
+    thead th.n, tbody td.n { text-align: right; }
+    thead th.c, tbody td.c { text-align: center; }
+
+    tbody td, tbody th {
+      padding: 0.55rem 0.9rem;
+      color: var(--ink);
+      white-space: nowrap;
+    }
+
+    tbody th {
+      font-weight: 400;
+      text-align: left;
+    }
+
+    tbody th em { font-style: italic; }
+
+    tbody tr:not(:last-child) td,
+    tbody tr:not(:last-child) th { border-bottom: 1px solid var(--rule); }
+
+    tbody tr.total td, tbody tr.total th {
+      border-top: 1px solid var(--ink);
+      font-weight: 600;
+    }
+
+    tbody tr.group th {
+      font-style: italic;
+      color: var(--muted);
+      padding-top: 0.7rem;
+    }
+
+    td.best { font-weight: 600; color: var(--accent); }
+
+    /* ---------- Callout ---------- */
+
+    .note {
+      border-left: 3px solid var(--accent);
+      background: var(--wash);
+      padding: 1rem 1.2rem;
+      border-radius: 0 5px 5px 0;
+      margin: 1.5rem 0;
+      font-size: 0.9375rem;
+    }
+
+    .note p + p { margin-top: 0.7rem; }
+
+    .note .note-title {
+      font-family: "IBM Plex Sans", sans-serif;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      display: block;
+      margin-bottom: 0.35rem;
+    }
+
+    /* ---------- Code / BibTeX ---------- */
+
+    .codeblock { position: relative; margin: 1.5rem 0; }
+
+    .codeblock pre {
+      background: var(--wash);
+      border: 1px solid var(--rule);
+      border-radius: 6px;
+      padding: 1.25rem 1.4rem;
+      overflow-x: auto;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.8125rem;
+      line-height: 1.65;
+      color: var(--ink);
+    }
+
+    .codeblock pre .c { color: var(--muted); }
+
+    .copy-btn {
+      position: absolute;
+      top: 0.7rem;
+      right: 0.7rem;
+      font-family: "IBM Plex Sans", sans-serif;
+      font-size: 0.75rem;
+      font-weight: 500;
+      padding: 0.35rem 0.7rem;
+      background: var(--paper);
+      border: 1px solid var(--rule);
+      border-radius: 5px;
+      color: var(--ink);
+      cursor: pointer;
+      transition: border-color 0.15s ease, color 0.15s ease;
+    }
+
+    .copy-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+    code.inline {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.85em;
+      background: var(--wash);
+      border: 1px solid var(--rule);
+      border-radius: 3px;
+      padding: 0.05em 0.35em;
+    }
+
+    /* ---------- Link block ---------- */
+
+    .linkblock {
+      border: 1px solid var(--rule);
+      border-radius: 6px;
+      padding: 1.1rem 1.3rem;
+      background: var(--wash);
+      margin-top: 1.25rem;
+    }
+    .linkblock a { font-weight: 600; }
+    .linkblock p + p { margin-top: 0.4rem; }
+    .linkblock .small {
+      font-family: "IBM Plex Sans", sans-serif;
+      font-size: 0.8125rem;
+      color: var(--muted);
+    }
+
+    /* ---------- Footer ---------- */
+
+    .footer { margin-top: 5rem; }
+
+    .footer-body {
+      font-family: "IBM Plex Sans", sans-serif;
+      font-size: 0.8125rem;
+      line-height: 1.7;
+      color: var(--muted);
+      padding-top: 1.25rem;
+    }
+
+    .footer-body p + p { margin-top: 0.8rem; }
+    .footer-body h2 {
+      font-family: "IBM Plex Sans", sans-serif;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ink);
+      margin-bottom: 0.4rem;
+    }
+    .footer-body h2 + p { margin-top: 0; }
+    .footer-body p + h2 { margin-top: 1.6rem; }
+
+    /* ---------- Motion (hero only, reduced-motion respected) ---------- */
+
+    @media (prefers-reduced-motion: no-preference) {
+      .hero > * {
+        opacity: 0;
+        transform: translateY(8px);
+        animation: rise 0.55s ease forwards;
+      }
+      .hero > *:nth-child(2) { animation-delay: 0.06s; }
+      .hero > *:nth-child(3) { animation-delay: 0.12s; }
+      .hero > *:nth-child(4) { animation-delay: 0.18s; }
+      .hero > *:nth-child(5) { animation-delay: 0.24s; }
+      .hero > *:nth-child(6) { animation-delay: 0.30s; }
+      .hero > *:nth-child(7) { animation-delay: 0.36s; }
+      .hero > *:nth-child(8) { animation-delay: 0.42s; }
+      .hero > *:nth-child(9) { animation-delay: 0.48s; }
+      @keyframes rise {
+        to { opacity: 1; transform: none; }
+      }
+    }
+
+    @media (max-width: 540px) {
+      .page { padding-top: 3rem; }
+      .section { margin-bottom: 3rem; }
+      .stat-value { font-size: 1.35rem; }
+    }
+
+    @media print {
+      .actions, .copy-btn, .skip { display: none; }
+      body { background: #fff; color: #000; }
+      .todo { border-color: #000; color: #000; }
+    }
+  </style>
+
+  <style>
+    /* Additions for the notes page only; the block above is copied verbatim from index.html. */
+    .topnav {
+      font-family: "IBM Plex Sans", sans-serif;
+      font-size: 0.8125rem;
+      color: var(--muted);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 2.5rem;
+    }
+    .topnav .sep { color: var(--rule); }
+    .toc ol { margin: 0.75rem 0 0 1.35rem; }
+    .toc li { margin-bottom: 0.35rem; }
+    .toc .w { color: var(--accent); margin-right: 0.35rem; font-variant-numeric: lining-nums; }
+    .orient {
+      font-family: "IBM Plex Sans", sans-serif;
+      font-size: 0.9rem;
+      line-height: 1.65;
+      color: var(--muted);
+      border-bottom: 1px solid var(--rule);
+      padding-bottom: 0.9rem;
+      margin-bottom: 1.2rem;
+    }
+    h3 { scroll-margin-top: 1.5rem; }
+    .backtop {
+      font-family: "IBM Plex Sans", sans-serif;
+      font-size: 0.75rem;
+      margin-top: 1.5rem;
+    }
+    mjx-container { font-size: 1em; }
+  </style>
+
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+      options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+    };
+  </script>
+  <script id="MathJax-script" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <div class="page">
+
+    <nav class="topnav" aria-label="Site">
+      <a href="index.html">DEDUCT</a>
+      <span class="sep" aria-hidden="true">/</span>
+      <span>Extended supplementary notes</span>
+      <span class="sep" aria-hidden="true">/</span>
+      <a href="#toc">Contents</a>
+    </nav>
+
+    <!-- ============ MASTHEAD ============ -->
+    <header class="hero section">
+      <p class="eyebrow">Companion page to the paper</p>
+
+      <h1 class="title">Extended Supplementary Notes</h1>
+      <p class="subtitle">DEDUCT: Deep DNA Sequence Compression by Using Orthogonal Transform Network Layers</p>
+
+      <p class="authors">
+        Ahmet Atakan<sup>1,2</sup> · M. Volkan Atalay<sup>3</sup> · Rengul Cetin-Atalay<sup>4</sup> · A. Enis Cetin<sup>5</sup>
+      </p>
+
+      <ul class="affils">
+        <li><sup>1</sup> Department of Computer Engineering, Middle East Technical University, Ankara, Turkey</li>
+        <li><sup>2</sup> Department of Computer Engineering, Erzincan Binali Yildirim University, Erzincan, Turkey</li>
+        <li><sup>3</sup> Department of Information Systems and Supply Chain Management, Loyola University Chicago</li>
+        <li><sup>4</sup> Department of Medicine, Section of Pulmonary and Critical Care Medicine, The University of Chicago</li>
+        <li><sup>5</sup> Department of Electrical and Computer Engineering, University of Illinois Chicago. A. Enis Cetin is a Fellow of the IEEE and the corresponding author (<a href="mailto:aecyy@uic.edu">aecyy@uic.edu</a>).</li>
+      </ul>
+
+      <div class="note">
+        <span class="note-title">Status of this page</span>
+        <p>The paper and its supplementary remain the record of reference for every number they state. Material that appears only on this page (Section W1.5, Figure W1.1, Tables W5.3 and W5.4, and the extended measurements marked as such in each section) is recorded here. The source code is not public yet: it will be released at <a href="https://github.com/Cetin-Lab/deduct">github.com/Cetin-Lab/deduct</a> upon acceptance of the paper, and statements on this page about the released code, tests, or scripts refer to that release.</p>
+        <p>Sections W1 to W5 mirror Supplementary Sections S1 to S5 of the paper; Section W5.1 mirrors Section S6; and Sections W6 to W10 mirror Sections S7 to S11. Each section opens with a short statement of what the paper's supplementary keeps and what is extended here. Bracketed reference numbers follow the reference list of the paper. Section numbers of the form III-B refer to the main text.</p>
+      </div>
+
+      <div class="rule-double" aria-hidden="true"></div>
+    </header>
+
+    <main id="main">
+
+      <!-- ============ CONTENTS ============ -->
+      <nav class="section toc" id="toc" aria-labelledby="h-toc">
+        <h2 id="h-toc">Contents</h2>
+        <ol class="plain">
+          <li><a href="#w1"><span class="w">W1</span>Ablation of the Learned Path</a></li>
+          <li><a href="#w2"><span class="w">W2</span>The Front End</a></li>
+          <li><a href="#w3"><span class="w">W3</span>Coverage of the Learned Path</a></li>
+          <li><a href="#w4"><span class="w">W4</span>The SARS-CoV-2 Operating Regime</a></li>
+          <li><a href="#w5"><span class="w">W5</span>Training Details</a></li>
+          <li><a href="#w6"><span class="w">W6</span>Model-Inclusive Recalculation</a></li>
+          <li><a href="#w7"><span class="w">W7</span>Model Transfer Between Clusters</a></li>
+          <li><a href="#w8"><span class="w">W8</span>Numerical Robustness of Exactness</a></li>
+          <li><a href="#w9"><span class="w">W9</span>Verification</a></li>
+          <li><a href="#w10"><span class="w">W10</span>Running Times and Memory</a></li>
+        </ol>
+      </nav>
+
+      <!-- ============ W1 ============ -->
+      <section class="section" id="w1" aria-labelledby="h-w1">
+        <h2 id="h-w1"><span class="num">W1.</span>Ablation of the Learned Path</h2>
+
+        <p class="orient">Supplementary Section S1 of the paper keeps the protocol, the variant table, the results table over the twelve frozen matrices, the kernel-width grid, and a five-sentence statement of the correlation frame. This page holds the rest: the reasoning behind the protocol, the notes on individual variants, the mechanism behind each result, the quantization-step breakdown, the reading of the kernel-width grid, the frame figure and the derivation of the doubling bound, the released tests, and the single-seed protocol (Section W1.5), which is published only here.</p>
+
+        <h3 id="w1-1">W1.1 Protocol and variants</h3>
+
+        <p>The question this section answers is narrow on purpose: <em>given</em> the clusters the front end recovers, what does each part of the trained coder contribute? Clustering and alignment are therefore not re-run per variant. They are run once, and the resulting aligned matrices \(\mathbf{X}\in\{1,\dots,5\}^{H\times W}\) are written to disk; every variant reads the same files. This design choice has one consequence: a difference between two variants cannot be caused by the front end, but equally, nothing here measures the front end. That comparison is made separately, on the full corpus, in Section W2 (Supplementary Section S2 of the paper). The alignment stage remains in place in all variants because it is what makes a transform along the inter-genome axis meaningful at all: with rows that are not column-aligned, every variant degenerates together and the comparison stops discriminating.</p>
+
+        <p>Twelve clusters were selected, log-spaced in member count over the 774 clusters the front end admits on the <em>E. coli</em> corpus, spanning the full range of aligned heights. A top-\(N\) sample would have been easier and would have reported only the favorable mode of the bimodal accuracy distribution of Section V-A of the main text; the log-spaced sample deliberately includes clusters at which the method performs poorly.</p>
+
+        <p>Every variant writes a real compressed output to disk (weights, latent, residual, metadata), decodes it back with a freshly constructed model, and is verified by SHA-256 against the original matrix; a variant that fails verification is reported as a failure rather than dropped. All 120 runs (10 variants over 12 matrices) decoded from disk and matched their input by SHA-256. The size calculation is the paper's: all four components are counted, and only the decoder half of the network is stored. Sizes are bytes on disk, and BPB is over aligned bases. The parameter count reported with each variant is the total, of which only the decoder half is written to the compressed output. The search is one-factor-at-a-time at a single seed.</p>
+
+        <p><strong>Parameter matching.</strong> The transform is part of what the compressed output carries, so a variant that predicts better because it carries more weights has merely shifted cost from one term of the size calculation to another. The two fixed transforms (DCT, identity) add <em>zero</em> parameters: they are regenerated by the decoder from \(H_b\). The learned transform adds \((H_b/4)^2\) parameters (256 to 90,601 across the twelve heights) and is initialized <em>at</em> the DCT, so it can only be credited for what training adds on top of the proposed configuration.</p>
+
+        <p><strong>Notes on two variants.</strong> Two of the variants deserve a note. <em>Encoder without nonlinearity</em> keeps the parameter count and the output geometry of the proposed encoder and removes only the ReLU between the two convolutions, so the encoder collapses to an affine map; it tests whether the nonlinearity contributes. <em>One stride-4 conv</em> preserves the \(4\times\) downsampling in a single layer. We did not ablate by deleting one of the two stride-2 convolutions, although that would have been the obvious construction. Deleting one halves the row downsampling, changing the latent height and the DCT extent by \(2\times\), and would confound depth with resolution, so a size difference could not be attributed to either.</p>
+
+        <p><strong>On the configuration.</strong> The configuration is not the product of a single systematic parameter search. A broader search might shift these optima; the evaluated ranges already provided the reported compression without dataset-specific tuning.</p>
+
+        <h3 id="w1-2">W1.2 Results, read in full</h3>
+
+        <p>Every variant is compared on the same twelve frozen matrices, so a difference between variants is a property of the coder and of nothing else. Sizes are the real components each variant wrote to disk and decoded back. The numbers below are those of the ablation results table in Supplementary Section S1.1 of the paper.</p>
+
+        <p><strong>What the transform is doing.</strong> The identity variant is the one that separates mechanism from bookkeeping, and it separates them cleanly. Without the transform the latent does not get smaller: it doubles, 331,122 B against the DCT variant's 166,719 B, because the signal's energy is no longer concentrated into a few frequency planes and more coefficients survive the quantizer. What survives predicts almost nothing: argmax accuracy falls from 0.9882 to 0.4332, so the residual has to carry most of the matrix, 65,590,521 B against 145,754 B. The compressed size ends \(201.7\times\) the DCT variant's. The transform is not a post-hoc coding device; it is what makes the few coefficients the bottleneck keeps predictive, and removing it degrades both the prediction and the compressed size.</p>
+
+        <p><strong>A fixed transform outperforms a learned one.</strong> A learned \(H_b/4\) square matrix on the same axis, <em>initialized at the DCT</em> so that it starts from the proposed configuration, is worse on all twelve matrices and adds \((H_b/4)^2\) parameters per cluster, which must be written into every compressed output. That is 256 to 90,601 parameters across the twelve heights. Training does not improve on the fixed choice, and the fixed choice is free.</p>
+
+        <p><strong>The sparsity penalty contributes measurably.</strong> Removing or weakening it costs 8.3% and 9.1% respectively, in both cases by raising the latent and the residual with it. Raising \(\lambda\) to \(10^{-1}\) costs 0.9%, the flattest point on this axis: the latent shrinks (148,620 B) but the residual grows by a comparable amount (166,814 B). The configured \(\lambda=10^{-2}\) sits at the bottom of a shallow basin rather than at a sharp optimum, and the basin's depth is of the order of the seed spread of Section W1.5, so the ranking within it is not established.</p>
+
+        <p><strong>The threshold operator is not what sparsifies the stored latent.</strong> Removing the learnable soft threshold at the configured \(\lambda\) makes the compressed output 5.5% <em>smaller</em>, not larger. The reason is that the threshold and the quantizer both zero small coefficients, and in the proposed settings they are two orders of magnitude apart. \(\theta\) is initialized at \(e^{-3}=0.0498\) and lies between 0.0048 and 0.0406 across the twelve compressed matrices of the ablation setup, while the quantizer's dead zone is \(s/2 = 8.0\). Every coefficient the threshold would remove is already inside the dead zone. Reading the kept encoder's own pre-threshold coefficients isolates the threshold's effect on the coding path. On the largest matrix, none of the 26,572,798 zeroed coefficients falls in the threshold's marginal band \(s/2 \le |c| \lt s/2 + \theta\); across the twelve matrices, that band never exceeds 0.08% of the zeros. <em>On the coding path, at the proposed settings, the sparsity of the stored latent (the latent composition of Table W5.3) is produced by the quantizer.</em> The threshold is still in the training graph, where the quantizer is absent, so it shapes the decoder that is learned; but it should not be read as the mechanism that sparsifies the stored latent. Reparameterizing \(\theta\) in units of \(s\), so that the operator can reach the dead-zone boundary, is the obvious repair and we have not tried it.</p>
+
+        <p><strong>Collapsing the encoder to one layer is expensive.</strong> Replacing the two stride-2 convolutions with a single stride-4 convolution makes the compressed output \(73.1\times\) larger, and pairing it with \(\lambda=10^{-1}\) gives \(76.6\times\); the two are the same result, since the encoder change dominates. Both shrink the latent (127,040 B against 166,719 B), but the residual grows to 23.8 MB: argmax accuracy falls to 0.778, and a prediction of that quality is expensive to correct. The second encoder layer is therefore essential.</p>
+
+        <p><strong>Re-measuring the quantization step.</strong> The quantization-step choice of Section III-G of the main text was re-measured on these twelve matrices under the proposed configuration (\(s\in\{4,8,16\}\)). Stepping from \(s=8\) to \(s=16\) shrinks the non-residual side of the twelve compressed outputs from 244.9 kB to 181.1 kB, while the residual grows only from 99.0 kB to 145.8 kB; the totals make \(s=16\) 5.0% smaller than \(s=8\) and 35.6% smaller than \(s=4\).</p>
+
+        <p><strong>Two variants are smaller than the proposed configuration, and we did not adopt them.</strong> Removing the ReLU between the encoder's two convolutions gives a 17.0% smaller compressed output at a higher argmax accuracy (0.9969 against 0.9882) and is smaller on 10 of the 12 matrices; removing the soft threshold gives 5.5% and is smaller on 8 of 12. Both are single-seed, single-corpus results: the second lies within the seed spread of Section W1.5, and the first exceeds it by a margin a single run cannot establish firmly. Neither was found before the corpus runs were made. What the paper reports throughout is the configuration every corpus was compressed under, not the best of the ten measured here. If we adopted the winner, the corpus results and the ablation would be from different codecs. The variants we do interpret are the ones that move the compressed size by an order of magnitude or more: the transform, the encoder depth and the learned transform.</p>
+
+        <h3 id="w1-3">W1.3 Hyper-parameter choices and coding overhead</h3>
+
+        <p>The residual coder format (sparse or dense) is likewise not fixed in advance but chosen per cluster at write time. On the twelve frozen matrices, the sparse form is selected for every matrix. Relative to an always-sparse rule, the flexibility therefore costs only 12 one-byte layout tags, one per matrix, whereas an always-dense rule is \(7.7\times\) larger. The one-byte tag is the cost of not deciding the format in advance.</p>
+
+        <p><strong>Kernel width.</strong> The convolution kernel spans three rows and one column. The row extent is uncontroversial: neighboring rows are near-copies of one another and a kernel that sees three of them can average out a single member's variation. The column extent is the choice that needs defending, because neighboring columns are <em>not</em> independent in the biology: variants close together on a chromosome are inherited together, so a wider kernel could in principle see structure a one-column kernel cannot. The measurement shows that this potential is not realized. Widening the kernel means a latent position depends on several columns, and exact reconstruction then requires the latent to carry enough to separate them again. The gain is a correlation between adjacent loci; the cost is the transport of a mixture, and the cost dominates at every learning rate rather than at one operating point.</p>
+
+        <p><strong>Reading the kernel-width grid.</strong> The width was varied over {1, 3, 5} columns at three learning rates on two frozen matrices; the comparison covers odd widths only. The result is not that width 1 always gives the smallest size: on the mitochondrial matrix at \(5\times10^{-3}\), width 3 is 9% smaller. It is that width 1 gives the smallest size at five of the six (matrix, rate) combinations, and that the best point on <em>each</em> matrix is a width-1 point, which is the property the proposed setting depends on. Reading a single row of the table would have given the opposite answer once in six tries, which is why the learning rate is swept alongside the width. The two interact: at \(10^{-3}\) the run does not leave a plateau on this collection whatever the kernel, so a width comparison at that rate measures the plateau rather than the width. For the same reason, the learning rate is treated as a corpus-level hyperparameter and stated in the main text (Section III-G).</p>
+
+        <p>In that grid, accuracy is the decoder's argmax accuracy. The per-column majority vote quoted with each matrix is the level a model must exceed before it contributes.</p>
+
+        <figure class="table-figure">
+        <div class="table-wrap" tabindex="0" role="region" aria-labelledby="cap-w1-vote">
+          <table aria-labelledby="cap-w1-vote">
+            <thead>
+              <tr>
+                <th scope="col">Frozen matrix</th>
+                <th scope="col" class="n">Height × width</th>
+                <th scope="col" class="n">Per-column majority vote</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><th scope="row">Mitochondrial matrix</th><td class="n">9,658 × 16,568</td><td class="n">0.9981</td></tr>
+              <tr><th scope="row">SARS-CoV-2 matrix</th><td class="n">13,148 × 29,706</td><td class="n">0.9973</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <figcaption id="cap-w1-vote"><span class="fig-label">Table W1.1</span> Per-column majority-vote level of the two frozen matrices of the kernel-width grid. A model must exceed this level before it contributes.</figcaption>
+        </figure>
+
+        <h3 id="w1-4">W1.4 The correlation frame and the doubling bound</h3>
+
+        <p>This section gives the failure geometry (Figure W1.1), the double-writing remedy, the derivation of its bound, and the measurement that motivated it.</p>
+
+        <p><strong>Failure geometry and remedy.</strong> We describe the failure geometry first. Equation (1) of the main text is a correlation that is circular <em>in the frame</em>, not in the sequence. With each sequence written once and zero-padded, a rotation by \(k\) moves \(k\) of the target's bases past the reference's end, so two byte-identical sequences score \(\max(k,\,L-k)\) instead of \(L\). An acceptance threshold \(\tau_{\mathrm{acc}}\) then rejects identical sequences for every \(k/L\in(1-\tau_{\mathrm{acc}},\,\tau_{\mathrm{acc}})\), which are precisely the rotations the step exists to absorb. Writing the target twice, at offsets \(0\) and \(L_t\) in a frame with \(N\ge 2L_{\max}\) (\(L_{\max}\) is the longest sequence in the column), makes the frame-circular correlation coincide with the sequence-circular one, and the score becomes flat in \(k\); offsets \(k\ge L_t\) re-read the second copy and are excluded from the search.</p>
+
+        <figure id="fig-w1-1">
+          <img src="assets/fig-grouping.png"
+               alt="Diagram of the correlation frame in two parts. Upper part, three strips of colored bases. The reference r fills L positions. Below it the target t, which is r rotated by k and zero-padded, is laid out in a linear frame, and a bar marks that only L minus k positions can match. Below that the same target is written twice in a tiled frame of length N at least twice L max, and a bar marks that all L positions match. Lower part, a plot of the score of two byte-identical sequences against the rotation k over L. In the linear frame the score traces max of k and L minus k, a V shape that dips to 0.5 in the middle and falls below the acceptance threshold tau acc of 0.6 across a shaded rejected band. In the tiled frame the score is flat at 1 at every rotation."
+               width="2847" height="1950" loading="lazy" decoding="async">
+          <figcaption id="cap-w1-grouping"><span class="fig-label">Figure W1.1</span> The correlation frame: the score of two byte-identical sequences against the rotation \(k\), with the target written once (zero-padded) and written twice. This figure was Supplementary Figure S1 of an earlier draft and is now published only here.</figcaption>
+        </figure>
+
+        <p><strong>Bound derivation.</strong> The doubling is applied only when the target could be a rotation of the reference, that is when \(L_r\le 2L_t\), and this bound is not a tuning choice. Two copies cover reference positions \([0,2L_t)\); beyond that the reference is compared against wrapped target, where a non-homologous pair matches only at the level expected by chance. Since the score is normalized by \(\min(L_r,L_t)\), such a pair reaches at most \(\pi\,L_r/L_t\), where \(\pi=\sum_v p_v q_v\) is the chance agreement rate of the two compositions. For uniform composition \(\pi=\tfrac14\), and the score stays below \(\tau_{\mathrm{acc}}=0.6\) while \(L_r/L_t\lt 2.40\); \(\pi\) grows as composition skews, reaching \(\pi=((1-\gamma)^2+\gamma^2)/2=0.288\) at the \(\gamma=30.5\)% GC content of the most skewed collection we measure and tightening the bound to 2.08. The proposed bound of 2 is below both, so it is sufficient rather than tight, and it does not depend on assuming uniform bases. Outside that bound the target is a fragment rather than a rotation: the question is where it lies <em>within</em> the reference, which needs all \(L_r\) offsets, and the single zero-padded copy over the full frame already supplies them. Applying the doubling unconditionally is worse in both directions: it tests \(L_t\) of the \(L_r\) placements of a short fragment, and it inflates the scores of the fragments it does test. That is why collections whose contig lengths are heterogeneous lose most of their clustering under it.</p>
+
+        <p><strong>Frame length.</strong> In the implementation, \(N\) is the smallest 7-smooth integer that is at least \(2L_{\max}\), rather than the next power of two. Hardware FFT kernels handle 7-smooth sizes efficiently, so this choice keeps the frame close to its minimum length without a speed penalty.</p>
+
+        <p><strong>Released tests and the alignment-frame defect.</strong> The released tests cover the clustering side of this stage directly. A synthetic family of eight sequences at 1% mutation, each randomly rotated and every third one reverse-complemented, must be assigned to one cluster above \(\tau_{\mathrm{acc}}\), while two unrelated sequences, one of them a third of the length, must stay out of it. The frame itself is validated separately: it must leave room for the doubled target (\(\ge 2L\)) and must be 7-smooth, so the bound of this section is enforced at run time rather than only argued for here. The alignment stage had the same defect in a different form: there the frame was padded to the next power of two above the modal length, which turns the circular correlation into a linear one and returns every rotation \(k\gt L/2\) short by exactly \(N-L\). Depending on how large \(N-L\) is relative to \(L\), the member is then either rejected at the identity threshold or kept with \(N-L\) spurious gap symbols and a matching insertion record. On the largest <em>E. coli</em> cluster, the rejection affected 114 of the 1,242 members that the pre-correction run assigned to it, 9.80 Mbase in total, all of them at \(k/L\gt 0.5\). The corresponding alignment test is the property that matters downstream: over three seeds, 24 synthetic members with 1% mutations, including insertions and deletions as well as rotation and strand, must reconstruct to their original sequences exactly after alignment. A frame defect of this kind cannot survive that check, because a member kept with spurious gap symbols does not reconstruct.</p>
+
+        <h3 id="w1-5">W1.5 Single-seed protocol and its cost</h3>
+
+        <p class="orient">This subsection is not part of the paper's Supplementary Materials; it is published only on this page. The paper quotes from it only the 12.6% figure, which it gives in Supplementary Section S1 as the "seed spread measured on one matrix".</p>
+
+        <p>Every number in this paper comes from a single run at a fixed seed. To measure the seed spread, one matrix was re-coded ten times under the proposed configuration, varying only the seed. This matrix is the single cluster of the thousand-record mitochondrial collection (<em>mito1000</em> in the main text), of size \(1,000\times16,569\). Over the ten runs, the compressed size has a mean of \(57,427\) B, a standard deviation of \(7,225\) B, and a coefficient of variation of \(12.6\%\). Its range is \(47,727\)&ndash;\(68,182\) B. Argmax accuracy stays within \(0.9965\)&ndash;\(0.9976\). The ablation of Section W1 sums the compressed sizes of twelve matrices. If the per-matrix variations were independent, the coefficient of variation of the twelve-matrix total would fall by a factor of \(\sqrt{12}\), from \(12.6\%\) to about \(3.6\%\). The re-coded matrix, however, is one cluster of the most homogeneous corpus in the paper, so a heterogeneous cluster will vary more, not less.</p>
+
+        <p>This single-seed protocol is the accurate description of what was measured, and it bounds what the ablation above can support. A per-cluster model trained from a random initialization is not a deterministic function of its input, so a difference of a few percent between two variants is not something a single run can establish. We therefore rely only on the variants that move the compressed size by orders of magnitude: the transform (\(202\times\)), the encoder depth (\(73\times\)), and the learned transform (\(11\times\)). The sparsity-penalty variants (+8.3% and +9.1% at \(\lambda=0\) and \(10^{-3}\)) and the two variants that come out smaller than the proposed configuration (&minus;17.0% and &minus;5.5%) move the compressed size by amounts of the same order as the spread below, and are reported without claiming a ranking.</p>
+
+        <p>To put a number on that floor we re-coded one matrix ten times under the proposed configuration, varying only the seed: the single cluster of the thousand-record mitochondrial collection, 1,000 × 16,569, ten seconds a run.</p>
+
+        <figure class="table-figure">
+        <div class="table-wrap" tabindex="0" role="region" aria-labelledby="cap-w1-seeds">
+          <table aria-labelledby="cap-w1-seeds">
+            <thead>
+              <tr>
+                <th scope="col">Compressed size over ten seeds</th>
+                <th scope="col" class="n">Value</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><th scope="row">mean</th><td class="n">57,427 B</td></tr>
+              <tr><th scope="row">standard deviation</th><td class="n">7,225 B</td></tr>
+              <tr><th scope="row">coefficient of variation</th><td class="n best">12.6%</td></tr>
+              <tr><th scope="row">range</th><td class="n">47,727&ndash;68,182 B</td></tr>
+              <tr><th scope="row">argmax accuracy</th><td class="n">0.9965&ndash;0.9976</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <figcaption id="cap-w1-seeds"><span class="fig-label">Table W1.2</span> Ten seeds on the single cluster of the thousand-record mitochondrial collection (1,000 × 16,569), proposed configuration, seed varied and nothing else.</figcaption>
+        </figure>
+
+        <p>Two things follow. The variation is in <em>bytes</em>, not in quality: accuracy varies by 0.1% across the ten, while the compressed size varies by 35% of its own mean. A seed, therefore, determines how expensively the network represents what it has learned, not how well it learned it. And the floor is high: at 12.6% per matrix, a single-matrix comparison resolves almost nothing. The ablation of Section W1.2 sums twelve matrices, which is what makes it usable: if the per-matrix runs were independent the corpus-total coefficient would fall by roughly \(\sqrt{12}\), to about 3.6%. That is where the interpretation rule stated there comes from. The four variants above a tenth clear the floor several times over; of the two that come out smaller than the proposed configuration, the &minus;5.5% variant does not, and the &minus;17.0% variant exceeds it by a margin a single run cannot establish firmly. This is one cluster of the most homogeneous corpus in the paper, so it is a proof of the size of the effect rather than a noise floor for every corpus; a heterogeneous cluster will move more, not less.</p>
+
+        <p class="backtop"><a href="#toc">Contents</a></p>
+      </section>
+
+      <!-- ============ W2 ============ -->
+      <section class="section" id="w2" aria-labelledby="h-w2">
+        <h2 id="h-w2"><span class="num">W2.</span>The Front End</h2>
+
+        <p class="orient">Supplementary Section S2 of the paper keeps the two headline results (73.7% against 34.1% of the candidate pool, and the 87× penalty) and the reasons for fixed-width alignment. This page holds the protocol and the cluster counts of the contig-column comparison, the sizes of the eight largest column-free clusters, the two-bit packing measurement, and the tool-substitution note.</p>
+
+        <h3 id="w2-1">W2.1 Ablation of the contig-column decomposition</h3>
+
+        <p>The contig-column decomposition of Section III-B of the main text is the core of the front end. The ablation of Section W1 cannot evaluate it, because that study varies only the learned path. This section therefore evaluates the decomposition directly, on the full <em>E. coli</em> corpus, by asking how much it delivers to the learned path compared with not using it. The front end has four stages (normalization, separation, clustering, and alignment); the comparison varies only the way sequences are grouped for clustering and keeps everything else fixed. Variant (1) is the contig-column decomposition, which clusters within each column. Variant (2) is the column-free alternative that pools every contig and clusters within length buckets. The input pool (57.7% of the corpus) and the admission threshold are identical in both variants.</p>
+
+        <figure class="table-figure">
+        <div class="table-wrap" tabindex="0" role="region" aria-labelledby="cap-w2-arms">
+          <table aria-labelledby="cap-w2-arms">
+            <thead>
+              <tr>
+                <th scope="col">Variant</th>
+                <th scope="col" class="n">Clusters</th>
+                <th scope="col" class="n">Admitted</th>
+                <th scope="col" class="n">To the learned path (Gbp)</th>
+                <th scope="col" class="n">Share of pool</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><th scope="row">(1) Contig-column split</th><td class="n">7,398</td><td class="n">499</td><td class="n">4.717</td><td class="n best">73.7%</td></tr>
+              <tr><th scope="row">(2) Column-free global pool</th><td class="n">90</td><td class="n">36</td><td class="n">2.181</td><td class="n">34.1%</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <figcaption id="cap-w2-arms"><span class="fig-label">Table W2.1</span> The two front-end variants on <em>ecoli1</em>. Pool: contigs of at least 20 kbp, 179,718 contigs, 6.399 Gbp; admission threshold \(\eta = 64\). The paper points here for these values.</figcaption>
+        </figure>
+
+        <p>The two variants fail in opposite ways, and the contrast is what makes the comparison informative. Column-free pooling produces very few, very large clusters, because a pooled correlation finds each genome's largest contigs almost exclusively: its eight largest hold 2,399, 2,396, 2,395, 2,394, 2,394, 2,391, 2,388 and 2,383 members, i.e. approximately one representative per genome. The column split produces 7,398 clusters, of which 499 pass the admission threshold; the largest holds 1,205 members, and it reaches the smaller homologous contigs that pooling leaves as singletons. Larger clusters are not the objective; <em>covered bases</em> are, and on this corpus the columns cover \(2.2\times\) as many.</p>
+
+        <figure class="table-figure">
+        <div class="table-wrap" tabindex="0" role="region" aria-labelledby="cap-w2-eight">
+          <table aria-labelledby="cap-w2-eight">
+            <thead>
+              <tr>
+                <th scope="col">Rank</th>
+                <th scope="col" class="n">1</th>
+                <th scope="col" class="n">2</th>
+                <th scope="col" class="n">3</th>
+                <th scope="col" class="n">4</th>
+                <th scope="col" class="n">5</th>
+                <th scope="col" class="n">6</th>
+                <th scope="col" class="n">7</th>
+                <th scope="col" class="n">8</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><th scope="row">Members</th><td class="n">2,399</td><td class="n">2,396</td><td class="n">2,395</td><td class="n">2,394</td><td class="n">2,394</td><td class="n">2,391</td><td class="n">2,388</td><td class="n">2,383</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <figcaption id="cap-w2-eight"><span class="fig-label">Table W2.2</span> The eight largest clusters of the column-free variant (2). These sizes are recorded only here. The corpus has 2,397 genomes.</figcaption>
+        </figure>
+
+        <p>We did not substitute a content-based clustering tool (MMseqs2, CD-HIT, Mash): such tools return homology groups but not the recorded rotation and strand parameters that a byte-exact decoder needs. The argument is made in Section II of the main text.</p>
+
+        <h3 id="w2-2">W2.2 The fallback pool</h3>
+
+        <p>The pool is entropy-coded with gzip, whose DEFLATE algorithm [8] finds repeats within a fixed 32 KiB search window; ordering the pool by sequence length places near-duplicates inside that window. Bases enter the pool one byte each. Packing them two bits each would shrink the stream fourfold, but a repeat whose offset is not a multiple of four no longer byte-matches its earlier occurrence, and the match search misses it. Measured on this pool, packing costs \(2.6\times\) on the near-duplicate share and saves 12% only where the window matches nothing anyway.</p>
+
+        <p>We routed forty of the near-identical \({\sim}0.10\) Mbase contigs that the learned path's clusters are built from through the pool instead, ordered length-first exactly as the fallback orders them; they cost 2.2428 bits per base against the learned path's 0.0259, an \(87\times\) penalty. In the pool, each member's nearest copy lies a full sequence away, far outside DEFLATE's search window. The pool cannot replace the learned path on its own input.</p>
+
+        <h3 id="w2-3">W2.3 Fixed-width alignment</h3>
+
+        <p>Nothing was moved from this subsection; the paper keeps it in full.</p>
+
+        <p class="backtop"><a href="#toc">Contents</a></p>
+      </section>
+
+      <!-- ============ W3 ============ -->
+      <section class="section" id="w3" aria-labelledby="h-w3">
+        <h2 id="h-w3"><span class="num">W3.</span>Coverage of the Learned Path</h2>
+
+        <p class="orient">Supplementary Section S3 of the paper keeps the per-corpus coverage table, the mechanism sentence, the DNACorpus boundary, and the two-size mitochondrial comparison with its full component table. This section extends it with the framing of the coverage range, the full mechanism paragraph, and the longer reading of the scaling pair.</p>
+
+        <p>Collections differ enormously. At one end a collection is a single homologous family of uniform length, as in the mitochondrial and SARS-CoV-2 corpora, and the whole input is one matrix; at the other no two records are homologous at all, which is DNACorpus by construction, and nothing is admitted. Bacterial panels sit in between, and their position depends on how fragmented the assemblies are and how clonal the panel is: the <em>S. enterica</em> panel is less clonal than <em>ecoli1</em>, so a larger share of it goes to the global fallback, 78.3% of its bases against <em>ecoli1</em>'s 51.3%. The main text defines coverage in Section IV-B and points to the supplementary, whose Section S3 reports the coverage of every corpus in full: its coverage table reports how much of each corpus reached the trained coder, and what those clusters cost in the compressed output.</p>
+
+        <p>The same mechanism that enables the learned path also bounds its coverage. What the trained coder encodes is a residual against a consensus, which needs members co-linear enough to place in one coordinate system; where an assembly pipeline has fragmented them differently, or where the panel is genuinely diverse, the columns do not line up and the fallback takes over. This is a limitation of the alignment premise rather than of the transform, and Section III-B of the main text states the conditions under which it holds.</p>
+
+        <p><strong>The boundary, on the established benchmark.</strong> No two of DNACorpus's 17 files are homologous, so no cluster forms, every sequence is routed to the fallback, and the rate is 2.1724 BPB, which measures the boundary of the operating regime directly rather than asserting it.</p>
+
+        <h3 id="w3-1">W3.1 Scaling with collection size</h3>
+
+        <p>The two mitochondrial collections are the same NCBI query at two sizes (Section IV-A of the main text), so the pair separates the fixed costs of a compressed output from the rate; the component table of Supplementary Section S3.1 lists both compressed outputs in full. We report the pair because it connects to previous learnable benchmarks and isolates scale on a single organism, not as a demonstration of advantage: the redundancy here is extreme, and ordinary whole-collection matchers already perform very well.</p>
+
+        <p>Scaling from 1,000 to 67,190 records improves the trained coder's own rate from 0.0252 to 0.0163 BPB. The reason is amortization: a cluster with sixty-seven times the members spreads one model and one consensus over sixty-seven times the rows, and a decoder is \({\sim}1{,}200\) B in either compressed output. What scaling does not dilute is the side channel: both corpora are built from 16.5 kb records, so it stays at 21.1% and 24.2% of the two compressed outputs. What the subset shows is the effect of counting the model: at 16.6 Mbp, a fixed pre-trained model of a few megabytes costs several BPB, whereas DEDUCT's decoder-only model is 1,203 B, or 1.8% of its own compressed output (Section W6).</p>
+
+        <p>The full mitochondrial collection yields two clusters. The 66,306-member cluster reconstructs at 0.998 before the residual; the 191-member second cluster reaches only 0.866 and pays for the difference in residual, 0.089 BPB against the large cluster's 0.016. At 35,214 B it does not move the corpus rate, but admission by member count is again admitting a cluster the transform serves poorly. The bimodal accuracy pattern of the main text (Section V-A) appears even here.</p>
+
+        <p class="backtop"><a href="#toc">Contents</a></p>
+      </section>
+
+      <!-- ============ W4 ============ -->
+      <section class="section" id="w4" aria-labelledby="h-w4">
+        <h2 id="h-w4"><span class="num">W4.</span>The SARS-CoV-2 Operating Regime</h2>
+
+        <p class="orient">Supplementary Section S4 of the paper keeps the per-year table, the quota description, the ambiguity series with its two correlation coefficients, and the per-year path comparison for 2020 and 2025. This section extends it with the motivation of the series, the per-record ambiguity medians with their record counts, the mechanism paragraph with its single-deletion measurement, the masking mode, and the reading of the fallback share and the cluster count.</p>
+
+        <p>The main text states this section's finding without numbers (Section V-A); here it is measured. The same organism sampled in different years is the same collection at different degrees of diversity, so the SARS-CoV-2 corpus lets us measure the method's dependence on near-identity rather than state it as a caveat. What the quota is a share of varies by an order of magnitude across the series. Because the quota is fixed while the years differ in size, the years are not equally represented relative to their size. In the per-year table, <em>Records</em> is the per-year quota (Section IV-A of the main text); rows are comparable as collections built under one protocol, not as samples of equal completeness. <em>Coverage</em> is the share the trained coder received. Across the seven per-year collections, non-ACGT symbols make up 2.00% of all characters, and the consensus genomes carry them in long runs of <code class="inline">N</code>.</p>
+
+        <p><strong>What the coverage column tracks.</strong> The series is not a temporal decline. What the coverage column of the per-year table (<em>Coverage</em>) tracks is a property of our own front end: how much of each year's consensus genomes is ambiguous. The two move together across all seven years (2023 and 2025, the two most ambiguous years, appear in the same order on both axes; every other pair reverses). Per record the separation is sharper still: in 2023 the 13,196 records the front end declined carry a median of 2,194 ambiguity characters against 126 for the 36,804 it admitted, and in 2022 the medians are 2,212 against 11.</p>
+
+        <p><strong>Mechanism.</strong> The mechanism is the separation step of Section III-B of the main text. Removing a non-ACGT character shortens the sequence, and every coordinate after it moves; clustering then scores a circular rotation correlation, which a shift takes out of register. On a 29,900 bp sequence against a copy of itself, deleting a single interior base drops that correlation from 1.000 to 0.626, barely above the admission threshold \(\tau_{\mathrm{acc}} = 0.6\). Removing three runs of 700 characters, fewer than the 2,194 a declined 2023 record carries, drops it below the threshold entirely. A genome 99.9% identical to its neighbors over its called bases is rejected for the bases that were never called. The coverage column is therefore reporting a property of our own separation step, not population structure.</p>
+
+        <p><strong>Masking mode.</strong> The released tool also offers a masking mode: each non-ACGT symbol is replaced by a placeholder base rather than being deleted, so later coordinates remain in register. The substitution is exactly invertible, and a record consisting entirely of ambiguity symbols is retained rather than rejected. Deletion remains the default, and every result in this paper uses it.</p>
+
+        <p><strong>Operating condition.</strong> The operating condition is therefore narrower than contig numbering alone. The front end needs members that are co-linear <em>as stored</em>, and a collection whose records carry long interior runs of uncalled bases does not satisfy that under the proposed setting.</p>
+
+        <p><strong>Fallback share and cluster count.</strong> Records outside the identity threshold go to the global fallback, so the gap between D-BPB and F-BPB widens in ambiguity-heavy years, even where the trained coder holds up on what it receives. The cluster count rises in those years for the same reason: ambiguity runs shift each record's coordinates by a different amount, so one family fragments into several alignable groups instead of one.</p>
+
+        <p><strong>The two paths per year.</strong> The two paths can also be compared directly on their per-year rates. In 2020, at 98.2% coverage, the fallback pool codes its share at 0.1080 BPB, compared to the trained coder's 0.0082, so the rate of the fallback pool is \(13.2\times\) that of the trained coder. In 2025, at 76.1% coverage, the corresponding rates are 0.2984 and 0.0342 BPB, a factor of 8.7.</p>
+
+        <p class="backtop"><a href="#toc">Contents</a></p>
+      </section>
+
+      <!-- ============ W5 ============ -->
+      <section class="section" id="w5" aria-labelledby="h-w5">
+        <h2 id="h-w5"><span class="num">W5.</span>Training Details</h2>
+
+        <p class="orient">Supplementary Section S5 of the paper keeps the training procedure, the stopping rule, the ambiguity-code totals, and the height-band table; Supplementary Section S6 keeps the storage layout of the latent and the per-cluster choice of the residual form. This page holds the reasoning behind the stopping rule and the sparsity penalty, the IUPAC breakdown, the range of aligned heights, the twelve-cluster training table, the reading of the height bands, and, in Section W5.1, the latent composition and representation tables that are no longer in the paper.</p>
+
+        <p><strong>Training procedure.</strong> Every cluster is trained from scratch with Adam, using a fixed seed, for at most 60 epochs over tiles of width \(W_t=512\) that span the cluster's full height. That is, one block per cluster, split only when a single tile would exceed the device memory cap in Section III-C of the main text. The batch is 4 tiles if the block is taller than 400 rows, and 16 tiles otherwise; this is a memory constraint rather than a tuned choice.</p>
+
+        <p><strong>Stopping rule.</strong> Every fifth epoch the compressed output is written and its size measured; the epoch chosen is the one whose compressed size was smallest, and training halts after three consecutive measurements without an improvement. The quantity being minimized is bytes on disk, so that is what the stopping rule reads, not the training loss, which is only a proxy for it. The sparsity penalty used in training is consistent with this rule: it charges \(\lambda\max(0,|\zeta|-s/2)\), the part of a coefficient that survives quantization and therefore costs bytes, where an \(\ell_1\) would also charge coefficients the quantizer zeroes at no coding cost. The per-epoch sizes are measured at DEFLATE level 1, and only the chosen epoch is written at level 9. A ranking at level 9 could in principle order the epochs differently; this effect was not quantified.</p>
+
+        <p><strong>No schedule, no validation split, no per-cluster tuning.</strong> The same training procedure runs on every admitted cluster of a corpus. Per-<em>cluster</em> tuning is what we rule out, because a schedule fitted to the data being compressed would have to be paid for in the compressed output like any other parameter.</p>
+
+        <p><strong>What the separation step strips.</strong> Ambiguity codes other than <code class="inline">N</code> occur. The paper keeps the two totals; the breakdown is below.</p>
+
+        <figure class="table-figure">
+        <div class="table-wrap" tabindex="0" role="region" aria-labelledby="cap-w5-iupac">
+          <table aria-labelledby="cap-w5-iupac">
+            <thead>
+              <tr>
+                <th scope="col">Collection</th>
+                <th scope="col" class="n">IUPAC codes other than N</th>
+                <th scope="col">Breakdown</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><th scope="row"><em>ecoli1</em></th><td class="n">0</td><td>carries only <code>N</code></td></tr>
+              <tr><th scope="row">SARS-CoV-2, 2021 collection</th><td class="n">11,129</td><td><code>Y</code> 6,725, <code>R</code> 3,769, then <code>K</code>, <code>W</code>, <code>M</code>, <code>S</code></td></tr>
+              <tr><th scope="row">Mitochondrial, full collection</th><td class="n">5,922</td><td>including <code>D</code> and <code>H</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <figcaption id="cap-w5-iupac"><span class="fig-label">Table W5.1</span> IUPAC ambiguity codes other than <code>N</code> stripped by the separation step.</figcaption>
+        </figure>
+
+        <p><strong>Timing.</strong> Total training time is 6,174.0 s for the <em>ecoli1</em> corpus, i.e. 7.98 s per cluster over the 774 coded clusters. Peak GPU memory occurs in the clustering stage, not here (Section W10). That peak is not a hard requirement: the clustering cache is limited by free VRAM at run time and falls back to recomputation rather than failing, so the pipeline runs on GPUs with less memory at lower speed.</p>
+
+        <p><strong>What the front end delivers.</strong> On the <em>E. coli</em> corpus the clustering stage recovers 817 groups of at least \(\eta=64\) members across 612 contig columns, and the 774 that also satisfy the minimum-tile condition are coded by the learned path. Aligned heights run from \(H=64\) to \(H=1{,}204\), with a median of 198. \(H\) counts members surviving the identity threshold, so it can be smaller than the member count \(\eta\) tests. On the largest cluster, the gap is now 1 (\(H=1{,}204\) against 1,205 members), whereas before the alignment-frame correction of Section W1.4, the same cluster, then assigned 1,242 members, lost 114 of them and 9.80 Mbase due to a mis-rotation. Within the learned path, the compressed output divides as 39.7% latent, 33.1% residual, 21.9% alignment metadata, and 5.3% decoder weights, and that split is strongly size-dependent.</p>
+
+        <p><strong>How training behaves across the admitted range.</strong> Measured on twelve coded clusters of the <em>ecoli1</em> compressed output, log-spaced in aligned height:</p>
+
+        <figure class="table-figure">
+        <div class="table-wrap" tabindex="0" role="region" aria-labelledby="cap-w5-twelve">
+          <table aria-labelledby="cap-w5-twelve">
+            <thead>
+              <tr>
+                <th scope="col">Cluster</th>
+                <th scope="col" class="n">H</th>
+                <th scope="col" class="n">W</th>
+                <th scope="col" class="n">argmax</th>
+                <th scope="col" class="n">Epoch kept</th>
+                <th scope="col" class="n">BPB</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><th scope="row"><code>c114_g16</code></th><td class="n">64</td><td class="n">12,409</td><td class="n">0.7736</td><td class="n">40</td><td class="n">0.11971</td></tr>
+              <tr><th scope="row"><code>c10_g0</code></th><td class="n">84</td><td class="n">59,841</td><td class="n">0.7597</td><td class="n">40</td><td class="n">0.08336</td></tr>
+              <tr><th scope="row"><code>c48_g13</code></th><td class="n">109</td><td class="n">25,494</td><td class="n">0.7380</td><td class="n">15</td><td class="n">0.06059</td></tr>
+              <tr><th scope="row"><code>c121_g16</code></th><td class="n">142</td><td class="n">12,409</td><td class="n">0.7729</td><td class="n">50</td><td class="n">0.07345</td></tr>
+              <tr><th scope="row"><code>c35_g19</code></th><td class="n">186</td><td class="n">32,602</td><td class="n">0.9994</td><td class="n">20</td><td class="n">0.02203</td></tr>
+              <tr><th scope="row"><code>c46_g26</code></th><td class="n">243</td><td class="n">26,744</td><td class="n">0.9993</td><td class="n">20</td><td class="n">0.02331</td></tr>
+              <tr><th scope="row"><code>c44_g17</code></th><td class="n">317</td><td class="n">28,797</td><td class="n">0.9989</td><td class="n">20</td><td class="n">0.01251</td></tr>
+              <tr><th scope="row"><code>c25_g25</code></th><td class="n">414</td><td class="n">37,768</td><td class="n">0.9999</td><td class="n">5</td><td class="n">0.00771</td></tr>
+              <tr><th scope="row"><code>c7_g12</code></th><td class="n">544</td><td class="n">60,958</td><td class="n">0.9996</td><td class="n">30</td><td class="n">0.00750</td></tr>
+              <tr><th scope="row"><code>c5_g7</code></th><td class="n">695</td><td class="n">70,301</td><td class="n">0.9992</td><td class="n">30</td><td class="n">0.00625</td></tr>
+              <tr><th scope="row"><code>c3_g3</code></th><td class="n">925</td><td class="n">79,579</td><td class="n">0.9928</td><td class="n">30</td><td class="n">0.01123</td></tr>
+              <tr><th scope="row"><code>c1_g19</code></th><td class="n">1,204</td><td class="n">88,080</td><td class="n">0.9973</td><td class="n">55</td><td class="n">0.00806</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <figcaption id="cap-w5-twelve"><span class="fig-label">Table W5.2</span> Training behaviour on twelve coded clusters of the <em>ecoli1</em> compressed output, log-spaced in aligned height \(H\). <em>W</em> is the aligned width, <em>argmax</em> the decoder's argmax accuracy before the residual, <em>Epoch kept</em> the epoch the size-based stopping rule retained, and <em>BPB</em> the cluster's rate over its aligned bases.</figcaption>
+        </figure>
+
+        <p>Three things are visible. The accuracy step is sharp rather than gradual: below \(H=200\) the five clusters average 0.809 and above \(H=500\) the four average 0.997, with the transition falling between 142 and 186 members. The bimodality of the main text is therefore a threshold in cluster height, not a spread. The rate falls by an order of magnitude with height, from 0.120 at \(H=64\) to 0.008 at \(H=1{,}204\), because a taller cluster amortizes one model and one consensus over more rows. Three neighboring pairs invert (<code class="inline">c121_g16</code>, <code class="inline">c46_g26</code>, <code class="inline">c3_g3</code>), where a narrower or less homogeneous matrix costs more than its height saves. And the size-based stopping rule keeps an epoch before the 60-epoch budget in all twelve, ending training early in ten of them, at kept epochs as early as 5 and 15. This is the rule's purpose: a fixed budget would have spent the remaining epochs producing larger compressed outputs.</p>
+
+        <p><strong>The admission threshold.</strong> Reporting a single accuracy for this corpus would be misleading, as the height-band table of Supplementary Section S5 shows: the clusters span two regimes. Two consequences follow, and both are arguments about the admission threshold rather than about the network. First, the model is predictive in proportion to how homogeneous the cluster is: the mean argmax runs from 0.7978, just above the admission threshold, to 0.9923 on the seven tallest, and where it is low, the residual has to carry much of the matrix. That shows in the rate: 0.1040 bits per matrix position below \(H=100\) against 0.0155 above \(H=800\), a factor of about seven on the same corpus under the same configuration. Second, the fixed cost of a model is charged against fewer rows: the decoder weights are 5.0% of what a cluster below \(H=100\) costs against 0.8% above \(H=800\). Neither effect is catastrophic on its own, and together they point to the same conclusion. The admission threshold \(\eta\) is a member count and tests homogeneity nowhere. Replacing it with a homogeneity criterion is therefore the most direct improvement; the main text lists the admission rule among the most promising directions (Section VI).</p>
+
+        <h3 id="w5-1">W5.1 Latent contents and storage cost</h3>
+
+        <p>The quantized latent \(\mathbf{Q}=\mathrm{round}(\mathbf{Z}/s)\) is a four-dimensional array over (tile, channel, frequency, column). The column axis is at the full tile width: only the row axis is downsampled by \(v=4\), so the frequency extent is \(H_b/4\) while the column extent is \(W_t\). It is written densely, and two things keep it small. A frequency index in which no coefficient survived quantization is not written at all, and a one-byte-per-plane mask records which planes remain. What is written is narrowed to the smallest integer width that holds it exactly, which is <code class="inline">int8</code> unless a coefficient exceeds it. A sparse alternative writes the nonzero coordinates and values instead; with the empty planes dropped, the dense form is smaller, and it is the form the pipeline stores.</p>
+
+        <p><strong>Three planes of 301.</strong> Three frequency planes of 301 carry the entire latent on the largest <em>ecoli1</em> cluster (1,204 × 88,080). That is the energy-compaction argument of Section III-C of the main text as a count rather than as a claim: after alignment, the rows of a block are so nearly constant that the vertical transform puts approximately all of the energy into the lowest few frequencies, and the quantizer zeroes the rest at no coding cost. It is also why the identity variant of Section W1 collapses: without the transform there is no basis on which three planes could hold the signal. Across the twelve frozen clusters, the stored latent ranges from 3,007 B on the smallest to 33,451 B, and none of them is empty: even the small, heterogeneous clusters of the height-band table retain a few planes. What varies is the latent's share of the compressed output. It is the dominant term on the tall, homogeneous clusters and a minor one where the residual has to carry the matrix.</p>
+
+        <figure class="table-figure">
+        <div class="table-wrap" tabindex="0" role="region" aria-labelledby="cap-w5-latent">
+          <table aria-labelledby="cap-w5-latent">
+            <thead>
+              <tr>
+                <th scope="col">Quantity</th>
+                <th scope="col" class="n">Value</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><th scope="row">Coefficients in \(\mathbf{Q}\)</th><td class="n">26,661,376</td></tr>
+              <tr><th scope="row">Nonzero coefficients</th><td class="n">88,578</td></tr>
+              <tr><th scope="row">Density</th><td class="n best">0.332%</td></tr>
+              <tr><th scope="row">Dynamic range</th><td class="n">[&minus;7, 7]</td></tr>
+              <tr><th scope="row">Share of nonzero coefficients at &plusmn;1 / &plusmn;6 / &plusmn;7</th><td class="n">48.8% / 27.1% / 21.8%</td></tr>
+              <tr><th scope="row">Frequency planes</th><td class="n">301</td></tr>
+              <tr><th scope="row">Planes with at least one nonzero coefficient</th><td class="n best">3</td></tr>
+              <tr><th scope="row">Dense <code>int8</code> storage of the remaining planes</th><td class="n">265,728 B</td></tr>
+              <tr><th scope="row">After entropy coding</th><td class="n best">29,974 B</td></tr>
+              <tr><th scope="row">Per nonzero coefficient</th><td class="n">2.707 bits</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <figcaption id="cap-w5-latent"><span class="fig-label">Table W5.3</span> Composition of the quantized latent \(\mathbf{Q}\) on the largest <em>ecoli1</em> cluster, a 1,204 × 88,080 matrix, under the proposed configuration and the dense representation. Density is the share of coefficients that are nonzero.</figcaption>
+        </figure>
+
+        <figure class="table-figure">
+        <div class="table-wrap" tabindex="0" role="region" aria-labelledby="cap-w5-latentrep">
+          <table aria-labelledby="cap-w5-latentrep">
+            <thead>
+              <tr>
+                <th scope="col">Representation</th>
+                <th scope="col" class="n">Bytes</th>
+                <th scope="col" class="n">Relative</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><th scope="row">Sparse coordinates and values (alternative)</th><td class="n">33,975</td><td class="n">1.13</td></tr>
+              <tr><th scope="row">Dense <code>int8</code> over surviving planes (proposed)</th><td class="n best">29,974</td><td class="n best">1.00</td></tr>
+              <tr><th scope="row">Dense <code>int16</code> plane (alternative)</th><td class="n">95,678</td><td class="n">3.19</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <figcaption id="cap-w5-latentrep"><span class="fig-label">Table W5.4</span> Lossless, entropy-coded representations of the same latent. The sparse form stores four <code>int32</code> coordinates per nonzero coefficient and an <code>int8</code> array of values. <em>Relative</em>: size relative to the proposed dense <code>int8</code> form.</figcaption>
+        </figure>
+
+        <p><strong>The cost of the sparse form.</strong> The sparse layout appears wasteful: sixteen bytes of coordinates per byte of payload, for values that need four bits. We therefore measured the alternatives on the same cluster. All three representations are lossless and all entropy-coded; the sparse form is four <code class="inline">int32</code> coordinates per nonzero, plus an <code class="inline">int8</code> value array, with the arrays concatenated and then compressed. The overhead is smaller than the layout suggests: compressed as one-dimensional coordinate arrays, the sparse form is 13% larger than the dense plane on this cluster. The coordinate arrays are predictable but not free. The dense <code class="inline">int16</code> plane is the worst of the three, because the high byte of every entry is a constant that the sparse form never writes at all and that <code class="inline">int8</code> does not need. The one argument left for the sparse form would be graceful degradation on a nearly empty latent, where a dense plane still writes a byte per coefficient. That does not survive measurement either: an all-zero plane is exactly what an entropy coder handles best, no latent is empty under the proposed codec, and the sparse form is worse on every one of the twelve. <em>So the latent is stored as a dense plane.</em></p>
+
+        <p>The margin is not specific to this cluster. Over the twelve frozen matrices the dense total is 0.68 of the sparse total, and at the scale of the whole <em>ecoli1</em> corpus the latent is 6.93 MB of the 17.46 MB the learned path writes, which makes it the largest single term of the learned path.</p>
+
+        <p><strong>The residual form.</strong> The same trade-off decides the <em>residual</em>, in the other direction. It can be stored as a dense \(H\times W\) symbol plane, 0 where the prediction was right and the true symbol elsewhere, or as a sparse list of (row, column, base) triples. The two carry identical information but give the smallest size in different regimes: the dense plane is almost entirely zeros, and long runs of zeros cost the entropy coder next to nothing, while the sparse form pays for coordinates on every entry but owes nothing at all to the positions the predictor got right. Nothing forces one form to give the smallest size on every cluster, so the proposed residual coder measures both forms and keeps the smaller per cluster, skipping the sparse build where a density test shows it cannot give the smallest size; Section W1.3 reports what that choice measures against always-dense and always-sparse on the frozen matrices.</p>
+
+        <p class="backtop"><a href="#toc">Contents</a></p>
+      </section>
+
+      <!-- ============ W6 ============ -->
+      <section class="section" id="w6" aria-labelledby="h-w6">
+        <h2 id="h-w6"><span class="num">W6.</span>Model-Inclusive Recalculation</h2>
+
+        <p class="orient">Supplementary Section S7 of the paper keeps the comparison table, a two-sentence assessment of GenCoder and DNACoder, the PMKLC recalculation table with its two qualifications, the direct comparison on identical input, and the taxonomy table. This page holds the itemized list of the published evaluations, the per-genome rates of GenCoder and DNACoder, the reasoning behind the model-size measurement, the further coders cited from PMKLC's Table 4, the AgentGC rate, and the footnote details of the three tables.</p>
+
+        <p><strong>Why the class has no shared benchmark.</strong> We consulted the published papers, and their own evaluations barely overlap. The first block of the paper's comparison table collects them: single chromosomes each group downloaded itself (DeepZip [23], DZip [24]), a telomere-to-telomere assembly and sequencing reads (JARVIS3 [61]), per-paper file sets (PMKLC [30], DeepGeCo [25], AGLDC [26]), and in TRACE's case [62] no DNA at all, its only genomic rates being third-party measurements. No collection of related genomes appears in any of these evaluations, with the one exception of the mitochondrial corpus of the main text's table of trained coders on about 1,000 mitochondrial genomes (Section V-C). Hence only the re-runs of [30], the table's second block, are mutually comparable: every coder ran under one protocol on one machine.</p>
+
+        <p><strong>Assessment of GenCoder and DNACoder.</strong> <em>GenCoder</em> [21] and <em>DNACoder</em> [22] are autoencoder and CNN&ndash;LSTM predictors whose reported rates (\({\sim}1.2\) BPB, and 1.36 / 1.11 BPB on <em>E. coli</em> / <em>H. pylori</em>) sit 29&ndash;40% below the strongest context models on the same genomes. In neither case is the size of the trained model required at decode time reported. We have not been able to reconcile the published rates with the published context-model baselines; a full size calculation would settle the matter either way. The effect of the omission has been quantified in print within the same subfield: for a representative static model (DNA-BiLSTM [31]) the average rate degrades from 1.907 BPB with the model excluded to 6.991 BPB with it included, and on a small genome from 1.856 to 12.523 BPB [30]. The paper uses the term "assessment" throughout where earlier drafts used "audit".</p>
+
+        <p><strong>The standard applied.</strong> A learnable coder that requires a pre-trained model at decode time has not compressed anything until that model is counted. We apply that standard to one published coder whose checkpoint is released, on its own benchmark, so the effect is visible on numbers its authors chose rather than ones we chose for them.</p>
+
+        <p><strong>Checkpoint measurement, and its limits.</strong> The checkpoints were downloaded from the authors' repositories and their sizes read from the ZIP directory without deserializing the payload: deserializing a third-party pickle executes arbitrary code, and the file sizes are the only quantity the calculation needs. The measured sizes are 2,070,216 B for PMKLC's <code class="inline">SPuM</code> and 1,873,572&ndash;2,463,468 B for AgentGC's [63], depending on configuration. DeepGeCo's Warm-Start model could not be measured: its repository contains no checkpoint and no link to one. In the recalculation table, every <em>Reported</em> value is the per-dataset PMKLC-S rate from Table 4 of that paper; the mean of that column, 1.845, is the paper's own headline. The penalty adds the released <code class="inline">SPuM</code> checkpoint (2,070,216 B) once per dataset. Two qualifications belong with the recalculated mean. The penalty is driven by the small files: +2.65 BPB on the 6.25 MB dataset against +0.016 BPB on the 1.05 GB one. And it is a mean <em>over datasets</em>; had the nine been coded as one collection the same model would have cost +0.008 BPB. The gap is real but its magnitude is a property of how results are averaged. We note also that PMKLC's static model is pre-trained on DNACorpus [30], and that four of its nine evaluation files (PlFa, WaMe, DrMe, GaGa) are members of DNACorpus; rates on those four are therefore not comparable with rates on the remaining five.</p>
+
+        <p><strong>The direct-comparison run and its unverified decompression.</strong> The main text reports one row measured by us: PMKLC-S on the same 16,568,048 bases DEDUCT codes on the thousand-record mitochondrial collection (released code, \(k=3\), \(s=3\), static public model <code class="inline">SPuM/all_model_3_3</code>), producing 145,688 B of compressed output, i.e. 0.0703 BPB over those bases and 1.0700 BPB with the 2,070,216 B model counted. We could not confirm that decompression reproduces the input: the released decompressor returned a file of the correct length, but its contents diverge from the input after 121 bytes and differ from it in 74% of the file. The same behavior appeared on a second dataset (<code class="inline">ScPo</code>, from PMKLC's own benchmark), with and without TF32. We do not conclude that the method is lossy; the fault may be in our environment, and we could not resolve it.</p>
+
+        <p><strong>Further coders in PMKLC's Table 4.</strong> Two further coders in Table 4 of that paper, MSDLC [27] (1.855) and AGLDC [26] (1.871; listed there as AGDLC), appear in the paper's comparison table. AGLDC's primary source (ICASSP 2025) confirms it as an adaptive xLSTM coder and reports 1.894 BPB on its own seven-file benchmark. MSDLC's text remains paywalled, so its rate is cited from that Table 4. AgentGC [63] reports 1.850 on a different benchmark, so it is not reported there. The 1.850 figure for AgentGC is the only number in this list that no longer appears anywhere in the paper; 1.855, 1.871 and 1.894 remain in the paper's comparison table.</p>
+
+        <p><strong>Footnote details of the three tables.</strong> Comparison table: GenCoder additionally excludes its training sequences from the totals; the DeepZip and JARVIS3 rates are computed from the reported compressed sizes, DeepZip's from 48.56 MB over 249 Mbases and JARVIS3's from about 539 MB over the 3.12 Gbp T2T assembly; DeepGeCo's warm start is pre-trained on DNACorpus; the nine PMKLC datasets are PlFa, WaMe, DrMe, GaGa, SnSt, MoGu, ArTh, AcSc and TaGu. Taxonomy table: DeepZip states that "the proposed framework stores the model weights as part of the compressed representation"; DZip transmits and counts its bootstrap model; PMKLC's selector activates <code class="inline">SPuM</code> precisely on files at or below 500 MB.</p>
+
+        <p class="backtop"><a href="#toc">Contents</a></p>
+      </section>
+
+      <!-- ============ W7 ============ -->
+      <section class="section" id="w7" aria-labelledby="h-w7">
+        <h2 id="h-w7"><span class="num">W7.</span>Model Transfer Between Clusters</h2>
+
+        <p class="orient">Supplementary Section S8 of the paper keeps the two experiments, their table, the chance-level result for a frozen transferred model, the SARS-CoV-2 warm start in one sentence, and the splitting overhead. This page holds the framing of each case, the mitochondrial warm-start pair and why it is confounded, the adapter question, and the full interpretation.</p>
+
+        <p>Every compressed output carries the decoder of every cluster it codes. If one model could code several clusters, the compressed output would carry one set of weights instead of many, and the size calculation in the main text would be unnecessarily conservative. We tested this directly, twice, in the two forms of the question that bracket it. Both experiments pin the block height, because the vertical transform is sized by it and a model cannot move between two of them; that takes them off the proposed configuration, which is why they are reported in the supplementary. Both read their matrices back out of verified compressed outputs rather than re-aligning, so the front end cannot differ between variants, and every variant reproduces its input exactly.</p>
+
+        <p><strong>The most favorable case: two parts of one cluster.</strong> The 66,306-member mitochondrial cluster is split on a block boundary, one block (9,476 rows) trained and six (56,830 rows) coded, so both halves share a consensus, a width, an organism and an alignment. The model trained on the first block is then asked to code the other six.</p>
+
+        <p><strong>The more demanding case: two collections a year apart.</strong> The model trained on the largest cluster of the 2021 SARS-CoV-2 collection is asked to code the largest cluster of 2022, frozen and as a warm start.</p>
+
+        <p><strong>Interpretation: zero-shot transfer fails, warm-starting does not.</strong> A <em>frozen</em> transferred model predicts about as well as random guessing in both cases (0.24700 and 0.32032 argmax), and the mitochondrial case is the stronger negative result: it fails under conditions that could hardly be more favorable. As a drop-in replacement for a trained decoder, the model is specific to the matrix it was trained on, and that is what rules out storing one set of weights for several clusters. Used as an <em>initialization</em> rather than as a finished model, the same weights behave differently, and we report it because it points the opposite way. Warm-started from 2021's model, the 2022 cluster reaches 0.99268 argmax in 10 epochs, against 0.98722 in 35 epochs trained from scratch: higher accuracy at \(3.5\times\) fewer epochs, and 1,317,518 B against 1,748,066 B, or 24.6% smaller. So the weights do carry something transferable; what they do not carry is a decoder that can be used without training. The mitochondrial pair cannot be read the same way, because its warm-start variant ran for 60 epochs against the own-model variant's 10 and the comparison is confounded; we give the number (0.99805, 1,316,171 B) and draw nothing from it.</p>
+
+        <p><strong>Two consequences.</strong> The compressed output still has to carry a decoder per cluster, so the size calculation in the main text stands. But the claim that there is <em>nothing</em> to amortize is too strong: what a shared backbone would save is training time, and possibly rate, rather than weights. A per-cluster adapter over a shared initialization is not refuted by anything here, and is the form the amortization question should take next. We did not pursue it, and the single clean pair above is one observation, not a result.</p>
+
+        <p><strong>Splitting rather than transfer.</strong> A second reading concerns splitting rather than transfer. Coding the mitochondrial cluster as one matrix costs 1,581,145 B; coding it as two, each with its own model, costs 1,998,211 B, or 26% more. Where the \(5\times10^{6}\) matrix-position tile cap of Section III-C of the main text forces a tall cluster into blocks, that is the overhead splitting incurs, and it is the argument for the default of one model per cluster.</p>
+
+        <p><strong>What the size column does not measure.</strong> The sizes of the compressed outputs for the transferred-model variant are not evidence that transfer is inexpensive. A model predicting at the level expected by chance produces a residual that is approximately the matrix, and an aligned matrix entropy-codes well on its own; the size says something about the residual coder, not about transfer. Only the accuracy column answers the question this section asks.</p>
+
+        <p class="backtop"><a href="#toc">Contents</a></p>
+      </section>
+
+      <!-- ============ W8 ============ -->
+      <section class="section" id="w8" aria-labelledby="h-w8">
+        <h2 id="h-w8"><span class="num">W8.</span>Numerical Robustness of Exactness</h2>
+
+        <p class="orient">Supplementary Section S9 of the paper keeps the two failure mechanisms, the headline TF32 measurement, the margin rule, and its cost at \(\tau = 0.1\). This page holds the development history of the kernel-selection failure, the way TF32 can be enabled inadvertently, the per-position counts, the full \(\tau\) distribution, the cost with per-file digests stored, and the defense-in-depth paragraph.</p>
+
+        <p>Constructive losslessness makes a claim about the decoder's arithmetic. The residual carries a correction only for the positions the encoder predicted wrong, so a position the encoder predicted right is recovered only if the decoder's argmax independently agrees. Two mechanisms can break that agreement, and both occurred in practice.</p>
+
+        <p><strong>Kernel selection.</strong> GPU convolution kernels are chosen by tensor shape, so evaluating tiles in one batch shape at compression time and another at decompression time can flip an argmax on a near-tie. In development this appeared in 9 of 2,397 files and was caught only by per-file verification. The decoder derives its batch from the stored configuration by the same rule the encoder used, so the shapes match.</p>
+
+        <p><strong>Reduced precision.</strong> TensorFloat-32 carries a 10-bit mantissa against float32's 24 and is enabled by default for cuDNN convolutions in any process that has not said otherwise, including a decompression process, which is a newly started one. It is also easy to enable inadvertently: PyTorch's <em>high</em> matrix-multiplication precision setting, a plausible choice while making a run deterministic, is precisely what enables TF32. We measured this on a real compressed output rather than on synthetic data. Re-evaluating the stored decoder of the 66,306-member mitochondrial cluster with TF32 as the only difference moves 376 argmaxes over its 1,098,557,808 positions. Of those, 168 carry no residual correction, so without the margin rule they would decode differently; that is enough to make 146 of 67,190 files fail verification. Each failing file has the correct header and length and a substituted base, which is the signature of an argmax that moved where the residual held no correction. The largest logit displacement was 0.0174.</p>
+
+        <p><strong>The margin rule.</strong> The remedy is not stricter control of the arithmetic but removal of the dependence on it. With \(m\) the difference between the largest and second-largest logit at a position, the encoder writes a residual entry wherever \(m \lt \tau\), even when its prediction is correct. The stored symbol is the true one in both cases, so the decoder and the file format are unchanged; what changes is that no perturbation smaller than \(\tau/2\) can alter a decoded symbol, since every position it could have flipped now carries its answer explicitly. At the default \(\tau=0.1\), the margin rule costs 0.18% of the mitochondrial collection's compressed output. \(\tau\) trades compressed size against the perturbation tolerated. The distribution is steep, which is what makes the margin rule affordable. Over 1,098,557,808 positions of the mitochondrial cluster:</p>
+
+        <figure class="table-figure">
+        <div class="table-wrap" tabindex="0" role="region" aria-labelledby="cap-w8-tau">
+          <table aria-labelledby="cap-w8-tau">
+            <thead>
+              <tr>
+                <th scope="col" class="n">\(\tau\)</th>
+                <th scope="col" class="n">positions with \(m \lt \tau\)</th>
+                <th scope="col" class="n">fraction</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><th scope="row" class="n">\(10^{-3}\)</th><td class="n">164</td><td class="n">\(1.49\times10^{-7}\)</td></tr>
+              <tr><th scope="row" class="n">\(10^{-2}\)</th><td class="n">1,940</td><td class="n">\(1.77\times10^{-6}\)</td></tr>
+              <tr><th scope="row" class="n">\(3\times10^{-2}\)</th><td class="n">5,640</td><td class="n">\(5.13\times10^{-6}\)</td></tr>
+              <tr><th scope="row" class="n">\(10^{-1}\)</th><td class="n best">18,806</td><td class="n best">\(1.71\times10^{-5}\)</td></tr>
+              <tr><th scope="row" class="n">\(3\times10^{-1}\)</th><td class="n">55,388</td><td class="n">\(5.04\times10^{-5}\)</td></tr>
+              <tr><th scope="row" class="n">\(1\)</th><td class="n">213,525</td><td class="n">\(1.94\times10^{-4}\)</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <figcaption id="cap-w8-tau"><span class="fig-label">Table W8.1</span> Distribution of the decision margin \(m\) over the 1,098,557,808 positions of the 66,306-member mitochondrial cluster. The paper keeps the \(\tau = 0.1\) and \(\tau = 1\) rows.</figcaption>
+        </figure>
+
+        <p>The proposed setting is \(\tau = 0.1\). The guarantee is stated in terms of \(\tau/2\), so the operative margin is 0.05 against the largest displacement TF32 was able to produce, 0.0174, a factor of 2.9. The margin rule adds 5,897 B, or 8,266 extra residual entries over those 1,098,557,808 positions: 0.18% of the 3.31 MB mitochondrial compressed output as reported (the default configuration) and 0.10% of its 6.03 MB version with per-file digests stored. Decoding that compressed output with TF32 enabled and disabled now agrees on every one of its 1,098,557,808 positions, where the same comparison without the margin rule disagrees on 168. We report the whole distribution rather than the proposed point alone because the right \(\tau\) depends on how far the intended decoder's arithmetic may drift, and a reader porting the format to other hardware needs the curve, not our choice on it.</p>
+
+        <p><strong>What remains.</strong> The header of the compressed output records the PyTorch version, the CUDA and cuDNN versions and the device it was written on, and the decoder reports any that differ. TF32 is disabled explicitly on both sides. Every file is checked against a SHA-256. None of the three is what makes decompression correct; they are defense in depth around a guarantee that now stands on the margin.</p>
+
+        <p class="backtop"><a href="#toc">Contents</a></p>
+      </section>
+
+      <!-- ============ W9 ============ -->
+      <section class="section" id="w9" aria-labelledby="h-w9">
+        <h2 id="h-w9"><span class="num">W9.</span>Verification</h2>
+
+        <p class="orient">Supplementary Section S10 of the paper keeps the single-command protocol, the isolated-process verification with its zero-failure count over 362,645 files, the digest accounting, and the determinism settings. This section extends it with the preparation table, the input-validation rules and their rationale, the size-reporting convention, the ablation reproduction note, the reason the decoder warns rather than refuses, and the normalization statement.</p>
+
+        <p>Every corpus is compressed by the same command, differing only in the input directory. The options exposed by the command line exist so that a configuration can be varied; no corpus in this paper needed one, and every run uses the default configuration. Preparation is limited to fetching the NCBI collections by the released retrieval script and wrapping each raw DNACorpus sequence as one FASTA record.</p>
+
+        <figure class="table-figure">
+        <div class="table-wrap" tabindex="0" role="region" aria-labelledby="cap-w9-prep">
+          <table aria-labelledby="cap-w9-prep">
+            <thead>
+              <tr>
+                <th scope="col">Corpus</th>
+                <th scope="col">Preparation</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><th scope="row"><em>ecoli1</em> (2,397), <em>S. enterica</em> (1,024)</th><td>none</td></tr>
+              <tr><th scope="row">mito1000, mito_full, SARS-CoV-2</th><td>fetched by the released corpus-retrieval script (Data and Code Availability)</td></tr>
+              <tr><th scope="row">DNACorpus (17)</th><td>wrap each raw sequence as one FASTA record</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <figcaption id="cap-w9-prep"><span class="fig-label">Table W9.1</span> Preparation per corpus. Everything else is the same command.</figcaption>
+        </figure>
+
+        <p><strong>Verification.</strong> Verification must report zero failures; a run that does not is not a result. It decompresses in an isolated process into a temporary directory and compares each reconstructed file against the digest recorded when the input was read. A size reported in this paper is therefore always a size that was decoded back: over the collections of this paper, 362,645 files, zero failures. The reported sizes subtract the stored digest bytes back out, which recovers the default configuration's size exactly, because the digests are a separable term of the side channel. Digest storage is off by default; every compressed output behind the tables was written with it so that decompression could be verified at all. On a collection of many short records the digests are the largest single side-channel term: switched on, they occupy roughly half of the mitochondrial collection's compressed output, 6.03 MB against 3.31 MB without them, over 67,190 records of 16.5 kb each. A compressed output written without digests has nothing to compare, and the verifier reports that condition as distinct from both success and a mismatch rather than claiming success.</p>
+
+        <p><strong>Input validation.</strong> Digest comparison is per file, so it presupposes that the file inventory was fixed when the input was read. Input validation therefore refuses malformed inputs at compress time rather than trusting verification to notice later: empty records, records consisting entirely of ambiguity symbols under the deletion mode, and input files whose names collide after normalization are all rejected. Normalization can give two different input files the same name, for example a plain and a gzip-compressed copy of the same file. Because decompression writes each output file under its own name, such an input set is rejected rather than being silently merged. The released tests exercise each of these adversarial classes end to end.</p>
+
+        <p><strong>Size reporting.</strong> The compressed size is the byte total of the output directory, reported as a breakdown over the three learned-path components, the global fallback and the side channel, together with the share of corpus bases each path took. That share is reported per corpus in the coverage table of Supplementary Section S3, because a rate on a collection where the front end admitted almost nothing is a statement about the fallback rather than about the method.</p>
+
+        <p><strong>Ablation.</strong> The ablations of Section W1 are reported as the evidence behind particular design choices rather than as a suite to be re-executed. Each variant is the proposed configuration with one component replaced (the transform, the soft threshold, the sparsity weight, the encoder's nonlinearity or its stride), and each was run by freezing the aligned matrices first, so that every variant reads byte-identical input and a difference between variants cannot come from the front end. Reproducing one is a matter of constructing the corresponding configuration and invoking the same per-matrix coding routine the pipeline itself uses; we do not provide a driver script, and the released code is the tool rather than a replay of our experiments.</p>
+
+        <p><strong>Determinism.</strong> All runs fix the random seeds, and both the encoder and the decoder restrict cuDNN to deterministic algorithms and disable TF32; the decoder does this itself rather than inheriting it, since decompression runs in a process that would otherwise start with TF32 on. The header of the compressed output records the PyTorch version, the CUDA and cuDNN versions and the device it was written on, and the decoder compares those four and warns when any differs. It warns rather than refuses, because refusing would make a compressed output unreadable on a newer PyTorch, and because the decision margin of Section W8 is what the guarantee actually rests on: a mismatch in this block is a reason to be told, not a reason the output will not decode. Byte-exactness is checked against a SHA-256 taken at separation time, so a numerical divergence is reported rather than silently accepted.</p>
+
+        <p><strong>Byte-exactness is relative to the normalized corpus.</strong> The first stage of the pipeline rewrites each FASTA into one record per two lines, upper-cased, with the record index appended to the header. Reconstruction is verified against <em>those</em> files, not against the files as downloaded; upper-casing in particular discards soft-masking. All baselines are run on the same normalized files, so the comparison is unaffected.</p>
+
+        <p class="backtop"><a href="#toc">Contents</a></p>
+      </section>
+
+      <!-- ============ W10 ============ -->
+      <section class="section" id="w10" aria-labelledby="h-w10">
+        <h2 id="h-w10"><span class="num">W10.</span>Running Times and Memory</h2>
+
+        <p class="orient">Supplementary Section S11 of the paper keeps both tables, the peak-memory figures, the <em>ecoli1</em> stage split, and the throughput comparison with DZip. This section extends it with the two implementation details that overlap alignment with training, the reading of the stage columns, and the full form of the DZip comparison; the second editorial pass removed no content and moved the caption explanations of the two tables into table footnotes.</p>
+
+        <p>Section III-F of the main text reports the asymmetry between compression and decompression time and the conclusion drawn from it. The two tables of Supplementary Section S11 carry the per-corpus measurements behind that statement, and a throughput comparison against published learnable coders.</p>
+
+        <p><strong>Peak memory.</strong> GPU memory peaks during clustering, which holds the Fourier transforms of every sequence in the largest contig column in memory at once: 22.1 GB on <em>ecoli1</em> (2,397 sequences, frame length 277,830, both orientations) and 26.6 GB on <em>S. enterica</em>, the highest we observed. Compression itself peaks near 11 GB, because only one cluster's model is in memory at a time. That peak is not a hard requirement: the clustering cache is limited by free VRAM at run time and falls back to recomputation rather than failing, so the pipeline runs on GPUs with less memory at lower speed.</p>
+
+        <p><strong>Two implementation details.</strong> Two implementation details are why alignment is so completely overlapped with training. The rotation search is batched on the GPU rather than run per member on the CPU (the clustering stage already computes the same correlation, so doing it again was redundant), and members already flush with the consensus skip the edit-distance alignment entirely: after rotation about half the members match the consensus length and, of those, 99.4% contain no indel at all.</p>
+
+        <p><strong>The stage columns.</strong> What the stage columns show is where each collection spends its time. On <em>ecoli1</em>, the combined alignment-and-coding span is 6,181.3 s, of which model training is 6,174.0 s, so alignment is almost entirely overlapped with training. Throughput varies by a factor of three across the corpora, and the reason is visible in the stage columns rather than in the totals. Clustering dominates the run of a heterogeneous collection, 14.1% of <em>S. enterica</em>'s total against 1.1% of <em>mito_full</em>'s, because the correlation frame is set by the longest sequence in a contig column and a panel with many columns of uneven length incurs that cost repeatedly. Coding dominates the run of a homogeneous collection. DNACorpus is the degenerate case at the other end: no cluster is admitted, 99% of its time is spent in the global fallback, and nothing is trained at all.</p>
+
+        <p><strong>Throughput against published coders.</strong> Against the published learnable coders, the comparison in the paper's throughput table is by throughput. Our own totals are 7,811.5 s to compress <em>ecoli1</em> and 210.2 s to decompress and verify it in an isolated process. Block (a) of that table is the exception to the combined-rate convention: DZip [24] reports the two directions separately (its Table V) and reports decoding as 15% slower than encoding, the only published evidence we found that decompression cost cannot be inferred from compression cost for this class of coder. Its bootstrap encoding throughput excludes the 2.0 min/MB of model training that precedes it; ours includes training.</p>
+
+        <p class="backtop"><a href="#toc">Contents</a></p>
+      </section>
+
+    </main>
+
+    <!-- ============ FOOTER ============ -->
+    <footer class="footer">
+      <div class="rule-double" aria-hidden="true"></div>
+
+      <div class="footer-body">
+        <h2>Record of reference</h2>
+        <p>The paper and its supplementary remain the record of reference for every number they state. Material that appears only on this page (Section W1.5, Figure W1.1, Tables W5.3 and W5.4, and the extended measurements marked as such in each section) is recorded here.</p>
+
+        <h2>License</h2>
+        <p>The DEDUCT implementation, configuration files, corpus and fetch scripts, evaluation scripts and test suite will be released under the <a href="https://polyformproject.org/licenses/noncommercial/1.0.0">PolyForm Noncommercial 1.0.0</a> license (noncommercial use, modification, and redistribution; not OSI-approved).</p>
+
+        <h2>Repository and archive</h2>
+        <p>Repository: <a href="https://github.com/Cetin-Lab/deduct">github.com/Cetin-Lab/deduct</a> (code to be released upon acceptance of the paper)</p>
+        <p>Archive DOI: assigned with the code release</p>
+
+        <h2>Funding</h2>
+        <p>This work was supported by the Scientific and Technological Research Council of Türkiye (TÜBİTAK) under the 2214-A International Research Fellowship Program for PhD Students (2024).</p>
+
+        <h2>Last updated</h2>
+        <p>2026-09-14. <a href="index.html">Back to the DEDUCT page</a>.</p>
+      </div>
+    </footer>
+
+  </div>
+</body>
+</html>

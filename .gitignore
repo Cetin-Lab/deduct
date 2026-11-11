@@ -1,0 +1,27 @@
+# Python build and test artefacts
+__pycache__/
+*.pyc
+*.egg-info/
+.pytest_cache/
+build/
+dist/
+.venv/
+
+# DEDUCT scratch and compressed-output blobs. The pipeline does not name its
+# output directory (the user names it on the command line). While compressing
+# it keeps a scratch directory `_work/` inside that directory, and every blob
+# it stores ends in `.z` (manifest.z, sidechannel/*.z, clusters/*/*.z,
+# fallback/*.z), so a compressed output placed anywhere in the tree is ignored.
+_work/
+*.z
+
+# Rebuilt corpora, e.g. `python scripts/fetch_corpus.py --corpus mito1000 --out ./mito1000`
+*.fna
+*.fa
+*.fasta
+*.fna.gz
+*.fa.gz
+*.fasta.gz
+
+# Operating system files
+.DS_Store

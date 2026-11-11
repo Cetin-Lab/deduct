@@ -1,0 +1,19 @@
+DEDUCT: Deep DNA Sequence Compression by Using Orthogonal Transform Network Layers
+
+Authors, in manuscript order.
+
+Ahmet Atakan (1, 2)
+M. Volkan Atalay (3)
+Rengul Cetin-Atalay (4)
+A. Enis Cetin (5), Fellow, IEEE; corresponding author, aecyy@uic.edu
+
+1 Department of Computer Engineering, Middle East Technical University, Ankara, Turkey
+2 Department of Computer Engineering, Erzincan Binali Yildirim University, Erzincan, Turkey
+3 Department of Information Systems and Supply Chain Management, Loyola University Chicago
+4 Department of Medicine, Section of Pulmonary and Critical Care Medicine, The University of Chicago
+5 Department of Electrical and Computer Engineering, University of Illinois Chicago
+
+Funding: TUBITAK 2214-A International Research Fellowship Program for PhD Students (2024).
+
+Copyright (c) 2026 the authors listed above. The software is released under the
+PolyForm Noncommercial License 1.0.0; see LICENSE.md and the Required Notice in NOTICE.

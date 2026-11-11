@@ -1,0 +1,55 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite the article below (preferred-citation) and the software release."
+type: software
+title: "DEDUCT: Deep DNA Sequence Compression by Using Orthogonal Transform Network Layers"
+abstract: "Reference-free, constructively lossless compression of genome collections: contig separation, rotation- and strand-invariant FFT clustering, consensus alignment, and a per-cluster convolutional autoencoder with a vertical block-DCT bottleneck."
+version: 1.0.0
+license: PolyForm-Noncommercial-1.0.0
+repository-code: "https://github.com/Cetin-Lab/deduct"
+url: "https://cetin-lab.github.io/deduct/"
+identifiers:
+  - type: doi
+    value: "10.5281/zenodo.24122005"
+    description: "Archived release of the repository"
+keywords:
+  - DNA compression
+  - autoencoder
+  - discrete cosine transform
+  - genome collections
+  - lossless compression
+  - reference-free
+authors:
+  - family-names: Atakan
+    given-names: Ahmet
+    affiliation: "Department of Computer Engineering, Middle East Technical University, Ankara, Turkey; Department of Computer Engineering, Erzincan Binali Yildirim University, Erzincan, Turkey"
+  - family-names: Atalay
+    given-names: M. Volkan
+    affiliation: "Department of Information Systems and Supply Chain Management, Loyola University Chicago"
+  - family-names: Cetin-Atalay
+    given-names: Rengul
+    affiliation: "Department of Medicine, Section of Pulmonary and Critical Care Medicine, The University of Chicago"
+  - family-names: Cetin
+    given-names: A. Enis
+    affiliation: "Department of Electrical and Computer Engineering, University of Illinois Chicago"
+    email: aecyy@uic.edu
+preferred-citation:
+  type: article
+  title: "DEDUCT: Deep DNA Sequence Compression by Using Orthogonal Transform Network Layers"
+  journal: "IEEE Access"
+  year: 2026
+  status: in-press
+  notes: "Accepted for publication in IEEE Access (2026)."
+  authors:
+    - family-names: Atakan
+      given-names: Ahmet
+      affiliation: "Department of Computer Engineering, Middle East Technical University, Ankara, Turkey; Department of Computer Engineering, Erzincan Binali Yildirim University, Erzincan, Turkey"
+    - family-names: Atalay
+      given-names: M. Volkan
+      affiliation: "Department of Information Systems and Supply Chain Management, Loyola University Chicago"
+    - family-names: Cetin-Atalay
+      given-names: Rengul
+      affiliation: "Department of Medicine, Section of Pulmonary and Critical Care Medicine, The University of Chicago"
+    - family-names: Cetin
+      given-names: A. Enis
+      affiliation: "Department of Electrical and Computer Engineering, University of Illinois Chicago"
+      email: aecyy@uic.edu

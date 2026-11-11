@@ -1,0 +1,30 @@
+{
+  "kernel": [
+    3,
+    1
+  ],
+  "vstride": 4,
+  "block_height": 0,
+  "tile_width": 512,
+  "latent_channels": 1,
+  "mid_channels": 32,
+  "scale": 16.0,
+  "penalty": "deadzone",
+  "penalty_weight": 0.01,
+  "epochs": 60,
+  "check_every": 5,
+  "learning_rate": 0.005,
+  "latent_coder": "dropk",
+  "residual_coder": "either",
+  "weight_coder": "raw16",
+  "measure_level": 1,
+  "gzip_level": 9,
+  "activation": "relu",
+  "depth": null,
+  "patience": 3,
+  "batch": 0,
+  "seed": 0,
+  "decision_margin": 0.1,
+  "transform": "dct",
+  "soft_threshold": true
+}

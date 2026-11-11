@@ -1,0 +1,48 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "deduct"
+version = "1.0.0"
+description = "Reference-free, byte-exact compression of genome collections"
+requires-python = ">=3.10"
+readme = "README.md"
+license = {text = "PolyForm Noncommercial License 1.0.0"}
+authors = [
+    {name = "Ahmet Atakan"},
+    {name = "M. Volkan Atalay"},
+    {name = "Rengul Cetin-Atalay"},
+    {name = "A. Enis Cetin", email = "aecyy@uic.edu"},
+]
+keywords = ["DNA compression", "genome collections", "lossless compression", "autoencoder", "discrete cosine transform", "reference-free"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: Other/Proprietary License",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+]
+dependencies = [
+    "numpy>=1.24",
+    "torch>=2.0",
+    "edlib>=1.3",
+]
+
+[project.optional-dependencies]
+test = ["pytest>=7"]
+
+[project.scripts]
+deduct = "deduct.cli:main"
+
+[project.urls]
+Homepage = "https://cetin-lab.github.io/deduct/"
+Repository = "https://github.com/Cetin-Lab/deduct"
+Archive = "https://doi.org/10.5281/zenodo.24122005"
+
+[tool.setuptools]
+license-files = ["LICENSE.md", "NOTICE"]
+
+[tool.setuptools.packages.find]
+include = ["deduct*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
